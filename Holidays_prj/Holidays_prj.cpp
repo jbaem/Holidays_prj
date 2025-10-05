@@ -35,10 +35,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Gdiplus::GdiplusStartupInput StartupInput;
     Gdiplus::GdiplusStartup(&Token, &StartupInput, nullptr);
 
-    InputManager::GetInstance().Initialize();
-    ResourceManager::GetInstance().Initialize();
-    GameManager::GetInstance().Initialize();
-
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_HOLIDAYSPRJ, szWindowClass, MAX_LOADSTRING);
@@ -76,11 +72,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         InvalidateRect(GameManager::GetInstance().GetWindowHandle(), nullptr, FALSE);
     }
 EXIT_LOOP:;
-    GameManager::GetInstance().Destroy();
-    ResourceManager::GetInstance().Destroy();
-    InputManager::GetInstance().Destroy();
-
-
     Gdiplus::GdiplusShutdown(Token);
     return (int) msg.wParam;
 }
@@ -100,7 +91,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_HOLIDAYSPRJ));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    //wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_HOLIDAYSPRJ);
+    wcex.lpszMenuName   = nullptr;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -112,19 +103,43 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
+    RECT rc = {
+        0, 0,
+        GameManager::ScreenWidth,
+        GameManager::ScreenHeight
+    };
+
+    AdjustWindowRectEx(
+        &rc,
+        WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
+        FALSE,
+        0
+    );
+
     HWND hWnd = CreateWindowW(
         szWindowClass,
-        szTitle, 
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, 
-        CW_USEDEFAULT, 0, 
+        L"Holiday Project",
+        WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
+        // App Position
+        GameManager::GetInstance().GetAppPosition().X,
+        GameManager::GetInstance().GetAppPosition().Y,
+        // Screen Size
+        rc.right - rc.left,
+        rc.bottom - rc.top,
         nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {
+        MessageBox(
+            NULL,
+            L"윈도우 생성 실패",
+            L"오류",
+            MB_OK | MB_ICONERROR
+        );
         return FALSE;
     }
 
+    GameManager::GetInstance().SetWindowHandle(hWnd);
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
@@ -136,24 +151,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_CREATE:
+        InputManager::GetInstance().Initialize();
+        ResourceManager::GetInstance().Initialize();
+        GameManager::GetInstance().Initialize();
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        
+        GameManager::GetInstance().Destroy();
+        ResourceManager::GetInstance().Destroy();
+        InputManager::GetInstance().Destroy();
         break;
     case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
         
-        GameManager::GetInstance().Render();
+            GameManager::GetInstance().Render();
 
-        EndPaint(hWnd, &ps);
-    }
-    break;
+            EndPaint(hWnd, &ps);
+        }
+        break;
     case WM_ERASEBKGND:
         return 1;
     case WM_KEYUP:
+        InputManager::GetInstance().HandleKeyState(wParam, false);
         break;
     case WM_KEYDOWN:
+        InputManager::GetInstance().HandleKeyState(wParam, true);
         break;
     case WM_COMMAND:
         {

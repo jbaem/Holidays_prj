@@ -13,8 +13,8 @@ public:
 	void Tick(float deltaTime);
 	void Render();
 
-	static constexpr unsigned int ScreenWidth = 800;
-	static constexpr unsigned int ScreenHeight = 600;
+	static constexpr unsigned int ScreenWidth = 1208;
+	static constexpr unsigned int ScreenHeight = 720;
 	static constexpr unsigned int ActorDefaultSize = 64;
 
 	// Getter
@@ -35,7 +35,7 @@ private:
 	virtual ~GameManager() = default;
 
 	HWND hMainWindow = nullptr;
-	Gdiplus::Point AppPosition = Gdiplus::Point(100, 100);
+	Gdiplus::Point AppPosition = Gdiplus::Point(50, 50);
 	
 	Gdiplus::Bitmap* BackBuffer = nullptr;
 	Gdiplus::Graphics* BackBufferGraphics = nullptr;
