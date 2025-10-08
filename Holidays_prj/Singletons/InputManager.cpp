@@ -12,7 +12,6 @@ void InputManager::Initialize()
 	KeyPressedMap[EKeyState::EKS_S] = false;
 	KeyPressedMap[EKeyState::EKS_D] = false;
 
-	KeyPressedMap[EKeyState::None] = false;
 	LastKey = EKeyState::None;
 }
 

@@ -16,7 +16,7 @@ public:
 		T* NewActor = new T(InID);
 		NewActor->SetLayer(InLayer);
 		NewActor->OnInitialize();
-		GameManager::GetInstance().RegisterActor(InLayer, NewActor);
+		GameManager::GetInstance().RegisterActor(NewActor);
 		return NewActor;
 	}
 

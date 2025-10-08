@@ -131,6 +131,8 @@
     <ClInclude Include="Actors\AActor.h" />
     <ClInclude Include="Actors\APawn.h" />
     <ClInclude Include="Actors\AEnemy.h" />
+    <ClInclude Include="Actors\Background.h" />
+    <ClInclude Include="Singletons\CollisionManager.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Components\CircleCollider.h" />
     <ClInclude Include="Components\Collider.h" />
@@ -150,6 +152,7 @@
     <ClInclude Include="Singletons\TSingleton.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Scenes\TestScene.h" />
+    <ClInclude Include="Actors\ATerrain.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -158,6 +161,8 @@
     <ClCompile Include="Actors\APlayer.cpp" />
     <ClCompile Include="Actors\APawn.cpp" />
     <ClCompile Include="Actors\AEnemy.cpp" />
+    <ClCompile Include="Actors\Background.cpp" />
+    <ClCompile Include="Singletons\CollisionManager.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Components\CircleCollider.cpp" />
     <ClCompile Include="Components\RectangleCollider.cpp" />
@@ -168,6 +173,7 @@
     <ClCompile Include="Singletons\GameManager.cpp" />
     <ClCompile Include="Holidays_prj.cpp" />
     <ClCompile Include="Scenes\TestScene.cpp" />
+    <ClCompile Include="Actors\ATerrain.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>

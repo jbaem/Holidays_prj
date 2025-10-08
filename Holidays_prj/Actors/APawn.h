@@ -7,18 +7,13 @@
 
 class APawn : public AActor
 {
+public:
 	APawn(EResourceID InID)
 		: AActor(InID) {}
 	virtual ~APawn() = default;
 
-	virtual void OnInitialize();
-	virtual void OnDestroy() {}
-	virtual void OnTick(float DeltaTime) {}
-	virtual void OnRender(Gdiplus::Graphics* InGraphics) {}
-
-	virtual void OnOverlap(AActor* Other) {}
-
-
+	virtual void OnInitialize() override;
+	virtual void OnTick(float DeltaTime) override;
 	virtual void TakeDamage(float InDamage);
 	virtual void Move(const Gdiplus::PointF& InDirection);
 
@@ -27,6 +22,6 @@ class APawn : public AActor
 
 protected:
 	float Health = 100.0f;
-	float MoveSpeed = 20000.0f;
+	float MoveForce = 50000.0f;
 };
 

@@ -5,21 +5,22 @@
 #include "TSingleton.h"
 #include "../Scenes/Scene.h"
 
+// ¾À °ü¸®
 class SceneManager : public TSingleton<SceneManager>
 {
 	friend class TSingleton<SceneManager>;
 public:
 	void Initialize();
+	void Destroy();
 	void Tick(float DeltaTime);
 	void Render(Gdiplus::Graphics* InGraphics);
 
-	void LoadScene(const std::wstring& SceneName);
+	void LoadScene(ESceneType InType);
 
 private:
-	SceneManager();
-	~SceneManager();
+	SceneManager() = default;
+	virtual ~SceneManager() = default;
 
 	Scene* CurrentScene = nullptr;
-	std::vector<Scene*> Scenes;
 };
 

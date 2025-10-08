@@ -2,6 +2,7 @@
 
 #include "../Singletons/GameManager.h"
 #include "../Singletons/ResourceManager.h"
+#include <typeinfo>
 
 AActor::AActor(EResourceID InID)
 {
@@ -15,68 +16,82 @@ AActor::AActor(EResourceID InID)
 	};
 }
 
-void AActor::DestroyActor()
+AActor::~AActor()
 {
-	if (!IsPendingDesytoy)
+	for (auto const& [key, val] : Components)
 	{
-		IsPendingDesytoy = true;
-		GameManager::GetInstance().RequestDestroy(this);
-	}
-}
-void AActor::OnDestroy()
-{
-	while (!Components.empty())
-	{
-		RemoveComponent(Components[0]);
+		delete val;
 	}
 	Components.clear();
 }
 
 void AActor::OnTick(float DeltaTime)
 {
-	for (auto& component : Components)
+	for (auto const& [key, val] : Components)
 	{
-		component->OnTick(DeltaTime);
+		val->OnTick(DeltaTime);
 	}
 }
 
 void AActor::OnRender(Gdiplus::Graphics* InGraphics)
 {
-	if (!InGraphics || !Image)
+	if (!InGraphics)
 		return;
 
-	// 현재 변환 상태
-	Gdiplus::Matrix oldTransform;
-	InGraphics->GetTransform(&oldTransform);
-	// 회전 중심점-> 객체의 중심
-	InGraphics->TranslateTransform(Position.X, Position.Y);
-	// 회전
-	InGraphics->RotateTransform(Angle);
-	InGraphics->TranslateTransform(-Position.X, -Position.Y);
-
-	InGraphics->SetTransform(&oldTransform);
+	Gdiplus::PointF RenderPos = GetRenderPosition();
+	if (Image)
+	{
+		InGraphics->DrawImage(
+			Image,
+			RenderPos.X, RenderPos.Y,
+			Size.X, Size.Y
+		);
+	}
+	else
+	{
+		Gdiplus::SolidBrush RedBrush(Gdiplus::Color(255, 255, 0, 0));
+		InGraphics->FillEllipse(&RedBrush,
+			RenderPos.X, RenderPos.Y,
+			Size.X, Size.Y
+		);
+	}
 }
 
 
+void AActor::Destroy()
+{
+	if (!bIsPendingDestroy)
+	{
+		bIsPendingDestroy = true;
+		GameManager::GetInstance().RequestDestroy(this);
+	}
+}
+
 void AActor::AddComponent(Component* InComponent)
 {
-	if (!InComponent)
-		return;
-	Components.push_back(InComponent);
+	if (InComponent)
+	{
+		Components[typeid(*InComponent).hash_code()] = InComponent;
+	}
 }
 
 void AActor::RemoveComponent(Component* InComponent)
 {
-	if (!InComponent)
-		return;
+	if (InComponent)
+	{
+		auto FindIt = Components.find(typeid(*InComponent).hash_code());
+		if (FindIt != Components.end())
+		{
+			delete FindIt->second;
+			FindIt->second = nullptr;
+		}
+	}
+}
 
-	auto iter = std::find(Components.begin(), Components.end(), InComponent);
-	if (iter == Components.end())
-		return;
-
-	(*iter)->OnDestroy();
-	std::swap(*iter, Components.back());
-	Components.pop_back();
-	delete InComponent;
-	InComponent = nullptr;
+Gdiplus::PointF AActor::GetRenderPosition() const
+{
+	return {
+		Position.X - Size.X * Pivot.X,
+		Position.Y - Size.Y * Pivot.Y
+	};
 }

@@ -1,33 +1,40 @@
 #pragma once
 
 #include "../Common.h"
-#include "AActor.h"
+#include "APawn.h"
 
 
-class APlayer : public AActor
+class APlayer : public APawn
 {
 public:
 	APlayer() = delete;
-	APlayer(EResourceID InID) : AActor(InID) {};
+	APlayer(EResourceID InID)
+		:APawn(InID) {};
+	virtual ~APlayer() = default;
 
-	virtual void OnInitialize() override {};
-	virtual void OnDestroy() override {};
-	virtual void OnTick(float DeltaTime) override {};
-	virtual void OnRender(Gdiplus::Graphics* InGraphics) override {};
-
-	virtual void OnOverlap(AActor* Other) override {};
+	virtual void OnInitialize() override;
+	virtual void OnTick(float DeltaTime) override;
+	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
+	virtual void OnOverlap(AActor* Other) override;
 
 	// Getter
-	inline float GetSpeed() const { return Speed; }
 	inline EPlayerState GetState() const { return State; }
 
 	// Setter
-	inline void SetSpeed(float InSpeed) { Speed = InSpeed; }
-	inline void SetState(EPlayerState InState) { State = InState; }
+	void SetState(EPlayerState InState);
 
 private:
-	float Speed = 200.0f;
+	void UpdateAnimation(float DeltaTime);
 
-	EPlayerState State = EPlayerState::Idle;
+	EPlayerState State = EPlayerState::Move;
+	EPlayerDirection FacingDirection = EPlayerDirection::Right;
+
+	Gdiplus::Bitmap* IdleSprite = nullptr;
+	Gdiplus::Bitmap* MoveSprite = nullptr;
+
+	int CurrentFrameIndex = 0;
+	float AnimationTimer = 0.0f;
+	int TotalFrames = 10;
+	float TimePerFrame = 1.0f / 15.0f;
 };
 

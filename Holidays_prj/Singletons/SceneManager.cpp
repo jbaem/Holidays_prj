@@ -3,60 +3,48 @@
 #include "../Scenes/Scene.h"
 #include "../Scenes/TestScene.h"
 
-SceneManager::SceneManager()
-{
-}
-
-SceneManager::~SceneManager()
-{
-	for (Scene* scene : Scenes)
-	{
-		delete scene;
-		scene = nullptr;
-	}
-	Scenes.clear();
-}
-
 void SceneManager::Initialize()
 {
-	Scenes.push_back(new TestScene());
-	LoadScene(L"Test Map");
+	CurrentScene = nullptr;
+	LoadScene(ESceneType::PlayerTest);
+}
+
+void SceneManager::Destroy()
+{
+	delete CurrentScene;
+	CurrentScene = nullptr;
 }
 
 void SceneManager::Tick(float DeltaTime)
 {
 	if (!CurrentScene)
 		return;
-
-	CurrentScene->Tick(DeltaTime);
+	CurrentScene->OnTick(DeltaTime);
 }
 
 void SceneManager::Render(Gdiplus::Graphics* InGraphics)
 {
 	if (!CurrentScene)
 		return;
-	CurrentScene->Render(InGraphics);
+	CurrentScene->OnRender(InGraphics);
 }
 
-void SceneManager::LoadScene(const std::wstring& SceneName)
+void SceneManager::LoadScene(ESceneType InType)
 {
 	Scene* NewScene = nullptr;
-	for (Scene* scene : Scenes)
+	switch (InType)
 	{
-		if (scene->GetName() == SceneName)
-		{
-			NewScene = scene;
-			break;
-		}
+	case ESceneType::PlayerTest:
+		NewScene = new TestScene();
+		break;
 	}
-
 	if (!NewScene)
 		return;
 
 	if (CurrentScene)
-		CurrentScene->OnExit();
+		CurrentScene->OnDestroy();
 	
 	CurrentScene = NewScene;
-	CurrentScene->OnEnter();
+	CurrentScene->OnInitialize();
 }
 

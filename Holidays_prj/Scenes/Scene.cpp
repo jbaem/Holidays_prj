@@ -2,7 +2,12 @@
 
 #include "../Singletons/GameManager.h"
 
-Scene::~Scene()
+void Scene::OnInitialize()
+{
+
+}
+
+void Scene::OnDestroy()
 {
 	for (auto ActorPair : Actors)
 	{
@@ -16,15 +21,7 @@ Scene::~Scene()
 	Actors.clear();
 }
 
-void Scene::OnEnter()
-{
-}
-
-void Scene::OnExit()
-{
-}
-
-void Scene::Tick(float DeltaTime)
+void Scene::OnTick(float DeltaTime)
 {
 	for (const auto& ActorPair : Actors)
 	{
@@ -35,7 +32,7 @@ void Scene::Tick(float DeltaTime)
 	}
 }
 
-void Scene::Render(Gdiplus::Graphics* InGraphics)
+void Scene::OnRender(Gdiplus::Graphics* InGraphics)
 {
 	for (const auto& ActorPair : Actors)
 	{

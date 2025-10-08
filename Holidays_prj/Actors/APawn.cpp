@@ -5,8 +5,15 @@
 
 void APawn::OnInitialize()
 {
+	AActor::OnInitialize();
+
 	AddComponent(new Physics(this));
-	AddComponent(new CircleCollider(this, EPhysicsLayer::Pawn, Size.X / 2.0f));
+	AddComponent(new CircleCollider(this, EPhysicsLayer::Pawn, GetSize().X * 0.5f));
+}
+
+void APawn::OnTick(float DeltaTime)
+{
+	AActor::OnTick(DeltaTime);
 }
 
 void APawn::TakeDamage(float InDamage)
@@ -15,9 +22,8 @@ void APawn::TakeDamage(float InDamage)
 	if (Health < 0.0f)
 	{
 		Health = 0.0f;
-		// TODO : »ç¸Á ·ÎÁ÷
+		Destroy();
 	}
-
 }
 
 void APawn::Move(const Gdiplus::PointF& InDirection)
@@ -26,8 +32,8 @@ void APawn::Move(const Gdiplus::PointF& InDirection)
 	if (MyPhysics)
 	{
 		Gdiplus::PointF Force = {
-			InDirection.X * MoveSpeed,
-			InDirection.Y * MoveSpeed
+			InDirection.X * MoveForce,
+			InDirection.Y * MoveForce
 		};
 		MyPhysics->AddForce(Force);
 	}

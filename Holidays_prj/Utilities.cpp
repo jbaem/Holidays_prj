@@ -1,4 +1,5 @@
 #include "Utilities.h"
+#include "Enums.h"
 
 bool IsAcuteTriangle(float side1, float side2, float hypotenuse)
 {

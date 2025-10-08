@@ -67,7 +67,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         ULONGLONG CurrentTime = GetTickCount64();
         float DeltaTime = (CurrentTime - LastTime) / 1000.0f;
-        
+        LastTime = CurrentTime;
         GameManager::GetInstance().Tick(DeltaTime);
         InvalidateRect(GameManager::GetInstance().GetWindowHandle(), nullptr, FALSE);
     }
@@ -153,18 +153,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
         GameManager::GetInstance().Initialize();
+        SceneManager::GetInstance().Initialize();
+        
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
-        
+        SceneManager::GetInstance().Destroy();
         GameManager::GetInstance().Destroy();
+
         break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-        
+
             GameManager::GetInstance().Render();
+            Gdiplus::Graphics GraphicsInstance(hdc);
+            GraphicsInstance.DrawImage(
+                GameManager::GetInstance().GetBackBuffer(),
+                0, 0
+            );
 
             EndPaint(hWnd, &ps);
         }
@@ -175,6 +183,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         InputManager::GetInstance().HandleKeyState(wParam, false);
         break;
     case WM_KEYDOWN:
+        if (wParam == VK_ESCAPE)
+        {
+            DestroyWindow(hWnd);
+        }
         InputManager::GetInstance().HandleKeyState(wParam, true);
         break;
     case WM_COMMAND:

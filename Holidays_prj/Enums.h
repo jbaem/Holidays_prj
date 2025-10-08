@@ -5,7 +5,8 @@
 
 enum class GameState : uint8_t
 {
-	Menu,
+	PlayerTest,
+	MainMenu,
 	Playing,
 	GameOver
 };
@@ -27,18 +28,29 @@ enum class EKeyState : uint8_t
 enum class EResourceID
 {
 	None = 0,
-	Player,
-	PlayerIdle
+	BackGround,
+	BackGround1,
+	BackGround2,
+	BackGround3,
+	PlayerIdle,
+	PlayerMove
 };
 
-enum class EPhysicsLayer
+enum class EPhysicsLayer : uint32_t
 {
-	None = 0,
-	Terrain,
-	Pawn,
-	Player,
-	Enemy
+	None			= 0,
+	Terrain			= 1 << 0,
+	Pawn			= 1 << 1,
+	Player			= 1 << 2,
+	Enemy			= 1 << 3,
+	PlayerBullet	= 1 << 4,
+	EnemyBullet		= 1 << 5,
+	All				= 0xFFFFFFFF
 };
+inline EPhysicsLayer operator|(EPhysicsLayer a, EPhysicsLayer b)
+{
+	return static_cast<EPhysicsLayer>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
 
 enum class ERenderLayer
 {
@@ -68,4 +80,18 @@ enum class EComponentType
 	None = 0,
 	Collider,
 	Physics
+};
+
+
+enum class ESceneType
+{
+	PlayerTest,
+	MainMenu,
+	Stage1
+};
+
+enum class EPlayerDirection : uint8_t
+{
+	Left,
+	Right
 };

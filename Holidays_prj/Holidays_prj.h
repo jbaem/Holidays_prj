@@ -9,4 +9,6 @@
 #include "Singletons/GameManager.h"
 #include "Singletons/ResourceManager.h"
 #include "Singletons/InputManager.h"
+#include "Singletons/CollisionManager.h"
+#include "Singletons/SceneManager.h"
 #include "Singletons/Factory.h"
