@@ -1,4 +1,6 @@
 #include "GameManager.h"
+#include "Factory.h"
+#include "../Components/Collider.h"
 
 void GameManager::Initialize()
 {
@@ -14,7 +16,8 @@ void GameManager::Initialize()
 		);
 	}
 
-	// TODO: Spawn Actors
+	MainPlayer = Factory::GetInstance().SpawnActor<APlayer>(EResourceID::PlayerIdle, ERenderLayer::Player);
+	int idx = 0;
 }
 
 void GameManager::Destroy()
@@ -27,13 +30,22 @@ void GameManager::Destroy()
 	BackBuffer = nullptr;
 }
 
-void GameManager::Tick(float deltaTime)
+void GameManager::Tick(float DeltaTime)
 {
 	if (State == GameState::Playing)
 	{
-		// TODO: All Actors->OnTick
+		for (const auto& ActorPair : ActorMap)
+		{
+			for (AActor* Actor : ActorPair.second)
+			{
+				if (!Actor)
+					continue;
+				Actor->OnTick(DeltaTime);
+			}
+		}
 
-		// TODO: Process Collsion, Destroy Actors
+		ProcessCollisions();
+		ProcessPendingDestroyActors();
 	}
 }
 
@@ -44,5 +56,60 @@ void GameManager::Render()
 
 	BackBufferGraphics->Clear(Gdiplus::Color(255, 0, 0, 0));
 	
-	// TODO: All Actors->OnRender
+	for (const auto& ActorPair : ActorMap)
+	{
+		for (AActor* Actor : ActorPair.second)
+		{
+			if (!Actor)
+				continue;
+			Actor->OnRender(BackBufferGraphics);
+		}
+	}
+}
+
+void GameManager::RegisterActor(ERenderLayer InLayer, AActor* InActor)
+{
+	if (!InActor)
+		return;
+
+	ActorMap[InLayer].insert(InActor);
+
+	Physics* PhysicsComponent = InActor->GetComponent<Physics>();
+	// TODO: Physics Layer Logic
+}
+
+void GameManager::DeregisterActor(AActor* InActor)
+{
+	if (!InActor)
+		return;
+
+	auto& ActorSet = ActorMap[InActor->GetLayer()];
+	if (ActorSet.find(InActor) == ActorSet.end())
+		return;
+
+
+
+	ActorSet.erase(InActor);
+}
+
+void GameManager::ProcessCollisions()
+{
+
+}
+
+void GameManager::ProcessPendingDestroyActors()
+{
+	for (AActor* Actor : PendingDestroyActors)
+	{
+		if (!Actor)
+			return;
+
+		if (Actor == MainPlayer)
+			MainPlayer = nullptr;
+
+		DeregisterActor(Actor);
+		Actor->OnDestroy();
+		delete Actor;
+	}
+	PendingDestroyActors.clear();
 }

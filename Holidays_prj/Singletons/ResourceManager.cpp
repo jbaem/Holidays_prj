@@ -4,8 +4,9 @@
 
 void ResourceManager::Initialize()
 {
-	Resources[ResourceID::None] = nullptr;
-	LoadResourceFromFile(ResourceID::Player, L"./Images/Player.png");
+	Resources[EResourceID::None] = nullptr;
+	LoadResourceFromFile(EResourceID::Player, L"./Images/Player.png");
+	LoadResourceFromFile(EResourceID::PlayerIdle, L"./Images/Player/_Idle.png");
 }
 
 void ResourceManager::Destroy()
@@ -18,7 +19,7 @@ void ResourceManager::Destroy()
 	Resources.clear();
 }
 
-Gdiplus::Bitmap* ResourceManager::GetImage(ResourceID InID)
+Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID)
 {
 	if (Resources.find(InID) == Resources.end())
 		return nullptr;
@@ -26,7 +27,7 @@ Gdiplus::Bitmap* ResourceManager::GetImage(ResourceID InID)
 	return Resources[InID];
 }
 
-bool ResourceManager::LoadResourceFromFile(ResourceID InID, const wchar_t* InPath)
+bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPath)
 {
 	if (!InPath)
 		return false;

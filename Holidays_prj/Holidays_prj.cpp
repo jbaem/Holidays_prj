@@ -152,16 +152,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        InputManager::GetInstance().Initialize();
-        ResourceManager::GetInstance().Initialize();
         GameManager::GetInstance().Initialize();
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
         
         GameManager::GetInstance().Destroy();
-        ResourceManager::GetInstance().Destroy();
-        InputManager::GetInstance().Destroy();
         break;
     case WM_PAINT:
         {

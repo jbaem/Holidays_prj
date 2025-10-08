@@ -129,8 +129,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actors\AActor.h" />
+    <ClInclude Include="Actors\APawn.h" />
+    <ClInclude Include="Actors\AEnemy.h" />
+    <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Components\CircleCollider.h" />
+    <ClInclude Include="Components\Collider.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Components\Component.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Actors\APlayer.h" />
+    <ClInclude Include="Components\RectangleCollider.h" />
+    <ClInclude Include="Components\Physics.h" />
+    <ClInclude Include="Singletons\SceneManager.h" />
     <ClInclude Include="Singletons\InputManager.h" />
     <ClInclude Include="Singletons\ResourceManager.h" />
     <ClInclude Include="Singletons\Factory.h" />
@@ -139,20 +149,69 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Singletons\TSingleton.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Scenes\TestScene.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actors\AActor.cpp" />
+    <ClCompile Include="Actors\APlayer.cpp" />
+    <ClCompile Include="Actors\APawn.cpp" />
+    <ClCompile Include="Actors\AEnemy.cpp" />
+    <ClCompile Include="Scenes\Scene.cpp" />
+    <ClCompile Include="Components\CircleCollider.cpp" />
+    <ClCompile Include="Components\RectangleCollider.cpp" />
+    <ClCompile Include="Components\Physics.cpp" />
+    <ClCompile Include="Singletons\SceneManager.cpp" />
     <ClCompile Include="Singletons\InputManager.cpp" />
     <ClCompile Include="Singletons\ResourceManager.cpp" />
     <ClCompile Include="Singletons\GameManager.cpp" />
     <ClCompile Include="Holidays_prj.cpp" />
+    <ClCompile Include="Scenes\TestScene.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Holidays_prj.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Holidays_prj.ico" />
+    <Image Include="Images\Player\_Attack.png" />
+    <Image Include="Images\Player\_Attack2.png" />
+    <Image Include="Images\Player\_Attack2NoMovement.png" />
+    <Image Include="Images\Player\_AttackCombo2hit.png" />
+    <Image Include="Images\Player\_AttackComboNoMovement.png" />
+    <Image Include="Images\Player\_AttackNoMovement.png" />
+    <Image Include="Images\Player\_Crouch.png" />
+    <Image Include="Images\Player\_CrouchAttack.png" />
+    <Image Include="Images\Player\_CrouchFull.png" />
+    <Image Include="Images\Player\_CrouchTransition.png" />
+    <Image Include="Images\Player\_CrouchWalk.png" />
+    <Image Include="Images\Player\_Dash.png" />
+    <Image Include="Images\Player\_Death.png" />
+    <Image Include="Images\Player\_DeathNoMovement.png" />
+    <Image Include="Images\Player\_Fall.png" />
+    <Image Include="Images\Player\_Hit.png" />
+    <Image Include="Images\Player\_Idle.png" />
+    <Image Include="Images\Player\_Jump.png" />
+    <Image Include="Images\Player\_JumpFallInbetween.png" />
+    <Image Include="Images\Player\_Roll.png" />
+    <Image Include="Images\Player\_Run.png" />
+    <Image Include="Images\Player\_Slide.png" />
+    <Image Include="Images\Player\_SlideFull.png" />
+    <Image Include="Images\Player\_SlideTransitionEnd.png" />
+    <Image Include="Images\Player\_SlideTransitionStart.png" />
+    <Image Include="Images\Player\_TurnAround.png" />
+    <Image Include="Images\Player\_WallClimb.png" />
+    <Image Include="Images\Player\_WallClimbNoMovement.png" />
+    <Image Include="Images\Player\_WallHang.png" />
+    <Image Include="Images\Player\_WallSlide.png" />
+    <Image Include="Images\Tile\BG1.png" />
+    <Image Include="Images\Tile\BG2.png" />
+    <Image Include="Images\Tile\BG3.png" />
+    <Image Include="Images\Tile\Decors.png" />
+    <Image Include="Images\Tile\ExampleTiles.png" />
+    <Image Include="Images\Tile\Mockup2x.png" />
+    <Image Include="Images\Tile\Tileset.png" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

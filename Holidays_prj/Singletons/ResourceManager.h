@@ -12,14 +12,14 @@ public:
 	virtual void Initialize();
 	virtual void Destroy();
 
-	Gdiplus::Bitmap* GetImage(ResourceID InID);
+	Gdiplus::Bitmap* GetImage(EResourceID InID);
 
 private:
 	ResourceManager() = default;
 	virtual ~ResourceManager() = default;
 
-	bool LoadResourceFromFile(ResourceID InID, const wchar_t* InPath);
+	bool LoadResourceFromFile(EResourceID InID, const wchar_t* InPath);
 
-	std::unordered_map<ResourceID, Gdiplus::Bitmap*> Resources;
+	std::unordered_map<EResourceID, Gdiplus::Bitmap*> Resources;
 };
 

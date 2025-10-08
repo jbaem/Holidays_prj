@@ -51,6 +51,42 @@
     <ClInclude Include="Singletons\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Collider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Component.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\APlayer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\CircleCollider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\RectangleCollider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Physics.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\APawn.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\AEnemy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Singletons\SceneManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Scene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\TestScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Holidays_prj.cpp">
@@ -68,6 +104,36 @@
     <ClCompile Include="Singletons\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Actors\APlayer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\CircleCollider.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\RectangleCollider.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Physics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\APawn.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\AEnemy.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Singletons\SceneManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Scene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\TestScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Holidays_prj.rc">
@@ -79,6 +145,117 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Holidays_prj.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Attack.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Attack2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Attack2NoMovement.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_AttackCombo2hit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_AttackComboNoMovement.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_AttackNoMovement.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Crouch.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_CrouchAttack.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_CrouchFull.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_CrouchTransition.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_CrouchWalk.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Dash.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Death.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_DeathNoMovement.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Fall.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Hit.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Idle.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Jump.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_JumpFallInbetween.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Roll.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Run.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Slide.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_SlideFull.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_SlideTransitionEnd.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_SlideTransitionStart.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_TurnAround.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_WallClimb.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_WallClimbNoMovement.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_WallHang.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_WallSlide.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\BG1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\BG2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\BG3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\Decors.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\ExampleTiles.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\Mockup2x.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Tile\Tileset.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
