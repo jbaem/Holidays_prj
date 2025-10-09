@@ -12,9 +12,6 @@ void ResourceManager::Initialize()
 	LoadResourceFromFile(EResourceID::PlayerMove, L"./Images/Player/_Run.png");
 	
 
-
-
-
 	CreateCompositeBackground();
 }
 
@@ -36,14 +33,6 @@ Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID)
 	return Resources[InID];
 }
 
-Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID, Gdiplus::PointF& Position, Gdiplus::PointF& Size)
-{
-	if (Resources.find(InID) == Resources.end())
-		return nullptr;
-
-	return Resources[InID];
-}
-
 bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPath)
 {
 	if (!InPath)
@@ -56,14 +45,15 @@ bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPa
 		return true;
 	}
 
+	// Fail to Load Image
 	delete LoadedImage;
 	LoadedImage = nullptr;
 
-	OutputDebugString(L"이미지 로드 실패");
+	OutputDebugString(L"Fail to Load Image\n");
 	MessageBox (
 		GameManager::GetInstance().GetWindowHandle(),
-		L"이미지 로드 실패",
-		L"오류",
+		L"Fail to Load Image",
+		L"ERROR",
 		MB_OK | MB_ICONERROR
 	);
 	return false;
@@ -79,21 +69,21 @@ bool ResourceManager::CreateCompositeBackground()
 		bg2->GetLastStatus() != Gdiplus::Ok ||
 		bg3->GetLastStatus() != Gdiplus::Ok)
 	{
-		OutputDebugString(L"배경 이미지 결합 실패");
+		OutputDebugString(L"Fail to Load Background\n");
 		return false;
 	}
 
 	UINT Width = bg1->GetWidth();
 	UINT Height = bg1->GetHeight();
 	Gdiplus::Bitmap* CompositeImage = new Gdiplus::Bitmap(Width, Height, PixelFormat32bppARGB);
-	Gdiplus::Graphics* GraphicsTool = Gdiplus::Graphics::FromImage(CompositeImage);
+	Gdiplus::Graphics* TempGraphics = Gdiplus::Graphics::FromImage(CompositeImage);
 
-	GraphicsTool->DrawImage(bg1, 0, 0, Width, Height);
-	GraphicsTool->DrawImage(bg2, 0, 0, Width, Height);
-	GraphicsTool->DrawImage(bg3, 0, 0, Width, Height);
+	TempGraphics->DrawImage(bg1, 0, 0, Width, Height);
+	TempGraphics->DrawImage(bg2, 0, 0, Width, Height);
+	TempGraphics->DrawImage(bg3, 0, 0, Width, Height);
 
 	Resources[EResourceID::BackGround] = CompositeImage;
 
-	delete GraphicsTool;
+	delete TempGraphics;
 	return true;
 }

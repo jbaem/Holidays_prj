@@ -10,6 +10,9 @@ public:
 		return Instance;
 	}
 
+	virtual void Initialize() = 0;
+	virtual void Destroy() = 0;
+
 protected:
 	TSingleton() = default;
 	virtual ~TSingleton() = default;

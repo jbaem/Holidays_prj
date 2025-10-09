@@ -16,9 +16,11 @@ public:
 		T* NewActor = new T(InID);
 		NewActor->SetLayer(InLayer);
 		NewActor->OnInitialize();
-		GameManager::GetInstance().RegisterActor(NewActor);
 		return NewActor;
 	}
+
+	virtual void Initialize() {};
+	virtual void Destroy() {};
 
 private:
 	Factory() = default;

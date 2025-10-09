@@ -1,25 +1,26 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "../Common.h"
 
 #include "TSingleton.h"
-#include "../Actors/APlayer.h"
-#include <unordered_set>
-#include "../Components/Physics.h"
-#include <set>
+#include "SceneHandler.h"
+#include "CollisionManager.h"
 
-// App window 包府, Manager 包府, Game State 包府, Actor 面倒 包府
+#include "../Actors/APlayer.h"
+
 class GameManager : public TSingleton<GameManager>
 {
 	friend class TSingleton<GameManager>;
 public:
-	void Initialize();
-	void Destroy();
+	virtual void Initialize();
+	virtual void Destroy();
+
 	void Tick(float DeltaTime);
 	void Render();
-
-	void RegisterActor(AActor* InActor);
-	inline void RequestDestroy(AActor* Target) { PendingDestroyActors.push_back(Target); }
+	
+	void RequestDestroy(AActor* InActor);
 
 	static constexpr unsigned int ScreenWidth = 1208;
 	static constexpr unsigned int ScreenHeight = 720;
@@ -37,27 +38,19 @@ public:
 		if (hMainWindow == nullptr)
 			hMainWindow = InHWnd;
 	}
-	inline void SetGameState(GameState InState) { State = InState; }
-
-	void SetMainPlayer();
+	void SetGameState(GameState InState);
 
 private:
-	GameManager() = default;
 	virtual ~GameManager() = default;
-
-	void DeregisterActor(AActor* InActor);
-	void ProcessCollisions();
-	void ProcessPendingDestroyActors();
-
-	std::unordered_set<AActor*> Actors;
-	std::vector<AActor*> PendingDestroyActors;
 
 	HWND hMainWindow = nullptr;
 	Gdiplus::Point AppPosition = Gdiplus::Point(50, 50);
+	
 	Gdiplus::Bitmap* BackBuffer = nullptr;
 	Gdiplus::Graphics* BackBufferGraphics = nullptr;
 
 	APlayer* MainPlayer = nullptr;
+	SceneHandler* MainSceneHandler = nullptr;
 	
 	GameState State = GameState::Playing;
 };

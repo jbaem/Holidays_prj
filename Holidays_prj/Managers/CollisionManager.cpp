@@ -1,4 +1,6 @@
 #include "CollisionManager.h"
+#include "../Scenes/Scene.h"
+#include "GameManager.h"
 
 void CollisionManager::Initialize()
 {
@@ -8,7 +10,7 @@ void CollisionManager::Initialize()
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::Enemy);
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::EnemyBullet);
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::Terrain);
-	
+
 	// Enemy
 	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::PlayerBullet);
 	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::Terrain);

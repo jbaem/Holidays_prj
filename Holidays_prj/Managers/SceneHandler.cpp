@@ -1,35 +1,34 @@
-#include "SceneManager.h"
+#include "SceneHandler.h"
 
 #include "../Scenes/Scene.h"
 #include "../Scenes/TestScene.h"
 
-void SceneManager::Initialize()
+SceneHandler::SceneHandler()
 {
-	CurrentScene = nullptr;
 	LoadScene(ESceneType::PlayerTest);
 }
 
-void SceneManager::Destroy()
+SceneHandler::~SceneHandler()
 {
 	delete CurrentScene;
 	CurrentScene = nullptr;
 }
 
-void SceneManager::Tick(float DeltaTime)
+void SceneHandler::Tick(float DeltaTime)
 {
 	if (!CurrentScene)
 		return;
 	CurrentScene->OnTick(DeltaTime);
 }
 
-void SceneManager::Render(Gdiplus::Graphics* InGraphics)
+void SceneHandler::Render(Gdiplus::Graphics* InGraphics)
 {
 	if (!CurrentScene)
 		return;
 	CurrentScene->OnRender(InGraphics);
 }
 
-void SceneManager::LoadScene(ESceneType InType)
+void SceneHandler::LoadScene(ESceneType InType)
 {
 	Scene* NewScene = nullptr;
 	switch (InType)
@@ -38,13 +37,14 @@ void SceneManager::LoadScene(ESceneType InType)
 		NewScene = new TestScene();
 		break;
 	}
+
 	if (!NewScene)
 		return;
 
 	if (CurrentScene)
-		CurrentScene->OnDestroy();
+		CurrentScene->OnExit();
 	
 	CurrentScene = NewScene;
-	CurrentScene->OnInitialize();
+	CurrentScene->OnEnter();
 }
 

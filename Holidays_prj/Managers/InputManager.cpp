@@ -20,13 +20,13 @@ void InputManager::Destroy()
 	KeyPressedMap.clear();
 }
 
-void InputManager::HandleKeyState(WPARAM InKey, bool InIsPressed)
+void InputManager::HandleKeyState(WPARAM InKey, bool bIsPressed)
 {
 	EKeyState KeyState = static_cast<EKeyState>(InKey);
 	if (KeyPressedMap.find(KeyState) == KeyPressedMap.end())
 		return;
 
-	KeyPressedMap[KeyState] = InIsPressed;
+	KeyPressedMap[KeyState] = bIsPressed;
 
-	LastKey = InIsPressed ? KeyState : EKeyState::None;
+	LastKey = bIsPressed ? KeyState : EKeyState::None;
 }
