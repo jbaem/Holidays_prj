@@ -30,25 +30,25 @@
     <ClInclude Include="Actors\AActor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\GameManager.h">
+    <ClInclude Include="Managers\GameManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\TSingleton.h">
+    <ClInclude Include="Managers\TSingleton.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Enums.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\Factory.h">
+    <ClInclude Include="Managers\Factory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\InputManager.h">
+    <ClInclude Include="Managers\InputManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\ResourceManager.h">
+    <ClInclude Include="Managers\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Components\Collider.h">
@@ -75,7 +75,7 @@
     <ClInclude Include="Actors\AEnemy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\SceneManager.h">
+    <ClInclude Include="Managers\SceneHandler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
@@ -87,13 +87,13 @@
     <ClInclude Include="Scenes\TestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Singletons\CollisionManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Actors\ATerrain.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Actors\Background.h">
+    <ClInclude Include="Actors\ABackground.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\CollisionManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,13 +104,13 @@
     <ClCompile Include="Actors\AActor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Singletons\GameManager.cpp">
+    <ClCompile Include="Managers\GameManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Singletons\InputManager.cpp">
+    <ClCompile Include="Managers\InputManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Singletons\ResourceManager.cpp">
+    <ClCompile Include="Managers\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Actors\APlayer.cpp">
@@ -131,7 +131,7 @@
     <ClCompile Include="Actors\AEnemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Singletons\SceneManager.cpp">
+    <ClCompile Include="Managers\SceneHandler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
@@ -143,13 +143,13 @@
     <ClCompile Include="Scenes\TestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Singletons\CollisionManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Actors\ATerrain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Actors\Background.cpp">
+    <ClCompile Include="Actors\ABackground.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\CollisionManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

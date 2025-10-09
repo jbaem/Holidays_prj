@@ -8,8 +8,7 @@ class APlayer : public APawn
 {
 public:
 	APlayer() = delete;
-	APlayer(EResourceID InID)
-		:APawn(InID) {};
+	APlayer(EResourceID InID) : APawn(InID) {};
 	virtual ~APlayer() = default;
 
 	virtual void OnInitialize() override;
@@ -28,6 +27,12 @@ private:
 
 	EPlayerState State = EPlayerState::Move;
 	EPlayerDirection FacingDirection = EPlayerDirection::Right;
+
+	const float ImageScale = 2.0f;
+	const Gdiplus::PointF FrameSize = { 120.0f, 80.0f };
+
+	bool bCanJump = false;
+	float JumpSpeed = 600.0f;
 
 	Gdiplus::Bitmap* IdleSprite = nullptr;
 	Gdiplus::Bitmap* MoveSprite = nullptr;

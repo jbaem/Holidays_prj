@@ -2,15 +2,15 @@
 
 #include "AActor.h"
 
-class Background : public AActor
+class ABackground : public AActor
 {
 public:
-	Background(EResourceID InID)
+	ABackground(EResourceID InID)
 		:AActor(InID)
 	{
 		Size = { 1280.f, 720.f };
 	}
-	virtual ~Background() = default;
+	virtual ~ABackground() = default;
 
 	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 };

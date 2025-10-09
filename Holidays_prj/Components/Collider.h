@@ -10,10 +10,9 @@ class RectangleCollider;
 class Collider : public Component
 {
 public:
-	Collider(AActor* InOwner, EPhysicsLayer InLayer)
-		: Component(InOwner, EComponentType::Collider), Layer(InLayer) 
+	Collider(EPhysicsLayer InLayer)
+		: Component(EComponentType::Collider), Layer(InLayer) 
 	{
-		Center = InOwner->GetPivot();
 	}
 	virtual ~Collider() = default;
 
@@ -21,14 +20,20 @@ public:
 	
 	virtual bool CheckCollisionWith(CircleCollider* Other) = 0;
 	virtual bool CheckCollisionWith(RectangleCollider* Other) = 0;
+	
+	virtual Gdiplus::PointF GetCenter() { 
+		Gdiplus::PointF OwnerPos = Owner->GetPosition();
+		return { OwnerPos.X + Offset.X, OwnerPos.Y + Offset.Y };
+	}
 	// Getter
-	inline Gdiplus::PointF GetCenter() const { return Center; }
 	inline EPhysicsLayer GetLayer() { return Layer; }
+
 	// Setter
-	inline void SetCenter(float x, float y) { Center = { x,y }; }
+	inline void SetOffset(float x, float y) { Offset = { x, y }; }
+	inline void SetLayer(EPhysicsLayer InLayer) { Layer = InLayer; }
 
 protected:
-	Gdiplus::PointF Center = { 0.0f, 0.0f };
+	Gdiplus::PointF Offset = { 0.0f, 0.0f };
 	EPhysicsLayer Layer = EPhysicsLayer::None;
 };
 

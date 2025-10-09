@@ -6,9 +6,8 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "Singletons/GameManager.h"
-#include "Singletons/ResourceManager.h"
-#include "Singletons/InputManager.h"
-#include "Singletons/CollisionManager.h"
-#include "Singletons/SceneManager.h"
-#include "Singletons/Factory.h"
+#include "Managers/GameManager.h"
+#include "Managers/ResourceManager.h"
+#include "Managers/CollisionManager.h"
+#include "Managers/InputManager.h"
+#include "Managers/Factory.h"

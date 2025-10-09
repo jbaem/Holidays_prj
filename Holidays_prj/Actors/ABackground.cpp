@@ -1,6 +1,6 @@
-#include "Background.h"
+#include "ABackground.h"
 
-void Background::OnRender(Gdiplus::Graphics* InGraphics)
+void ABackground::OnRender(Gdiplus::Graphics* InGraphics)
 {
 	if (!Image)
 		return;

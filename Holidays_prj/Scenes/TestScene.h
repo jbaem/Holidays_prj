@@ -6,6 +6,6 @@ class TestScene : public Scene
 {
 public:
 	TestScene();
-	virtual void OnInitialize() override;
+	virtual void OnEnter() override;
 };
 

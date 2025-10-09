@@ -4,9 +4,6 @@
 #include "../Actors/AActor.h"
 #include "../Common.h"
 
-CircleCollider::CircleCollider(AActor* InOwner, EPhysicsLayer InLayer, float InRadius)
-    : Collider(InOwner, InLayer), Radius(InRadius) {}
-
 bool CircleCollider::IsCollision(Collider* Other)
 {
 	return Other->CheckCollisionWith(this);
@@ -16,7 +13,7 @@ bool CircleCollider::CheckCollisionWith(CircleCollider* Other)
 {
     // Center
     Gdiplus::PointF MyCenter = this->GetCenter();
-    Gdiplus::PointF OtherCenter = Other->GetOwner()->GetPosition();
+    Gdiplus::PointF OtherCenter = Other->GetCenter();
 
     // Distance
     float dx = MyCenter.X - OtherCenter.X;

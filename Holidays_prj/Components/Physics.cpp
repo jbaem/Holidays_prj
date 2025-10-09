@@ -9,7 +9,6 @@ void Physics::OnTick(float DeltaTime)
 		AddForce({ 0.0f, GRAVITY });
 	}
 
-	// 가속 (가속도)
 	Velocity.X += Acceleration.X * DeltaTime;
 	if (Velocity.X >  MaxVelocity.X) Velocity.X =  MaxVelocity.X;
 	if (Velocity.X < -MaxVelocity.X) Velocity.X = -MaxVelocity.X;
@@ -18,7 +17,6 @@ void Physics::OnTick(float DeltaTime)
 	if (Velocity.Y >  MaxVelocity.Y) Velocity.Y =  MaxVelocity.Y;
 	if (Velocity.Y < -MaxVelocity.Y) Velocity.Y = -MaxVelocity.Y;
 
-	// 감속 (저항)
 	Velocity.X *= LinearDamping;
 	Velocity.Y *= LinearDamping;
 

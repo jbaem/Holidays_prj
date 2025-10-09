@@ -7,13 +7,18 @@ void APawn::OnInitialize()
 {
 	AActor::OnInitialize();
 
-	AddComponent(new Physics(this));
-	AddComponent(new CircleCollider(this, EPhysicsLayer::Pawn, GetSize().X * 0.5f));
+	AddComponent(new Physics());
+	AddComponent(new CircleCollider(EPhysicsLayer::Pawn, GetSize().Y * 0.5f));
 }
 
 void APawn::OnTick(float DeltaTime)
 {
 	AActor::OnTick(DeltaTime);
+}
+
+void APawn::OnRender(Gdiplus::Graphics* InGraphics)
+{
+	AActor::OnRender(InGraphics);
 }
 
 void APawn::TakeDamage(float InDamage)

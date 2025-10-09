@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <typeinfo>
 
+class Scene;
+
 class AActor
 {
 public:
@@ -14,17 +16,14 @@ public:
 	AActor(EResourceID InID);
 	virtual ~AActor();
 
-	// 라이프 사이클
 	virtual void OnInitialize() {}
 	virtual void OnTick(float DeltaTime);
 	virtual void OnRender(Gdiplus::Graphics* InGraphics);
 	virtual void OnOverlap(AActor* Other) {};
 
-	// 액터 관리
 	virtual void Destroy();
 	inline bool IsPendingDestroy() const { return bIsPendingDestroy; }
-
-	// 컴포넌트 관리
+	
 	void AddComponent(Component* InComponent);
 	void RemoveComponent(Component* InComponent);
 
@@ -32,10 +31,12 @@ public:
 	T* GetComponent() const
 	{
 		static_assert(std::is_base_of<Component, T>::value, "T must be derived from Component");
-		auto findIt = Components.find(typeid(T).hash_code());
-		if (findIt != Components.end())
+		for (const auto& pair : Components)
 		{
-			return dynamic_cast<T*>(findIt->second);
+			Component* Comp = pair.second;
+			T* CastedComponents = dynamic_cast<T*>(Comp);
+			if (CastedComponents)
+				return CastedComponents;
 		}
 		return nullptr;
 	}
@@ -51,11 +52,12 @@ public:
 	Gdiplus::PointF GetRenderPosition() const;
 
 	// Setter
-	inline void SetPosition(Gdiplus::PointF& InPosition) { Position = InPosition; }
+	inline void SetPosition(const Gdiplus::PointF& InPosition) { Position = InPosition; }
 	inline void SetPosition(float x, float y) { Position = { x, y }; }
 	inline void SetSize(float Width, float Height) { Size = { Width, Height }; }
 	inline void SetPivot(float x, float y) { Pivot = { x, y }; }
 	inline void SetLayer(ERenderLayer InLayer) { Layer = InLayer; }
+	inline void SetOwnerScene(Scene* InScene) { OwnerScene = InScene; }
 
 protected:
 	Gdiplus::PointF Position = { 0.0f, 0.0f };
@@ -67,9 +69,9 @@ protected:
 	Gdiplus::Bitmap* Image = nullptr;
 	ERenderLayer Layer = ERenderLayer::Misc;
 
-	std::unordered_map<size_t, Component*> Components;
+	std::unordered_map<EComponentType, Component*> Components;
 
-private:
 	bool bIsPendingDestroy = false;
+	Scene* OwnerScene = nullptr;
 };
 

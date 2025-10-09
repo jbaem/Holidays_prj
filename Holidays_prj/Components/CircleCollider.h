@@ -5,8 +5,23 @@
 class CircleCollider : public Collider
 {
 public:
-	CircleCollider(AActor* InOwner, EPhysicsLayer InLayer, float InRadius);
+	CircleCollider(EPhysicsLayer InLayer, float InRadius)
+		: Collider(InLayer), Radius(InRadius) {
+	}
 	virtual ~CircleCollider() = default;
+
+	virtual void OnRender(Gdiplus::Graphics* InGraphics) override
+	{
+		Gdiplus::Pen pen(Gdiplus::Color(255, 0, 255, 0));
+		Gdiplus::PointF Center = GetCenter();
+		InGraphics->DrawEllipse(
+			&pen,
+			Center.X - Radius,
+			Center.Y - Radius,
+			Radius * 2,
+			Radius * 2
+		);
+	}
 
 	virtual bool IsCollision(Collider* Other) override;
 

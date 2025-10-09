@@ -36,12 +36,9 @@ enum class EResourceID
 	Decors,
 	// Terrain Sprites
 	Tileset,
-	// Player Sprites // TODO: 분리
+	// Player Sprites
 	PlayerIdle,
 	PlayerMove,
-
-
-	// Enemy Sprites // TODO: 분리
 };
 
 enum class EPhysicsLayer : uint32_t
@@ -115,4 +112,11 @@ enum class EPlayerDirection : uint8_t
 {
 	Left,
 	Right
+};
+
+enum class ETerrainType : uint8_t
+{
+	None,
+	Solid,
+	OneWay
 };

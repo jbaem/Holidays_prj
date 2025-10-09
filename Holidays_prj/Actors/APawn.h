@@ -14,6 +14,7 @@ public:
 
 	virtual void OnInitialize() override;
 	virtual void OnTick(float DeltaTime) override;
+	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 	virtual void TakeDamage(float InDamage);
 	virtual void Move(const Gdiplus::PointF& InDirection);
 

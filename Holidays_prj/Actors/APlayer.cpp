@@ -4,15 +4,20 @@
 #include "../Components/CircleCollider.h"
 #include "../Components/RectangleCollider.h"
 
-#include "../Singletons/InputManager.h"
-#include "../Singletons/ResourceManager.h"
+#include "../Managers/InputManager.h"
+#include "../Managers/ResourceManager.h"
 #include "ATerrain.h"
 
 void APlayer::OnInitialize()
 {
-	APawn::OnInitialize();
+	SetSize(FrameSize.X * ImageScale, FrameSize.Y * ImageScale);
 
-	SetSize(120.0f, 80.0f);
+	APawn::OnInitialize();
+	Collider* MyCollider = GetComponent<CircleCollider>();
+	MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
+	static_cast<CircleCollider*>(MyCollider)->SetRadius(GetSize().Y * 0.20f);
+	MyCollider->SetLayer(EPhysicsLayer::Player);
+
 	IdleSprite = ResourceManager::GetInstance().GetImage(EResourceID::PlayerIdle);
 	MoveSprite = ResourceManager::GetInstance().GetImage(EResourceID::PlayerMove);
 
@@ -21,11 +26,11 @@ void APlayer::OnInitialize()
 
 void APlayer::OnTick(float DeltaTime)
 {
-
 	Physics* MyPhysics = GetComponent<Physics>();
-	if (!MyPhysics)
+	CircleCollider* MyCollider = GetComponent<CircleCollider>();
+
+	if (!MyPhysics || !MyCollider)
 	{
-		OutputDebugStringW(L"Error : physic\n");
 		return;
 	}
 
@@ -35,18 +40,25 @@ void APlayer::OnTick(float DeltaTime)
 	InputManager& inputManager = InputManager::GetInstance();
 	if (inputManager.IsKeyPressed(EKeyState::EKS_Left))
 	{
-		OutputDebugStringW(L"Left key pressed\n");
 		MoveDirection.X = -1.0f;
 		FacingDirection = EPlayerDirection::Left;
+		MyCollider->SetOffset(GetSize().X * 0.05f, GetSize().Y * 0.30f);
 		bIsMoving = true;
 	}
 
 	if (inputManager.IsKeyPressed(EKeyState::EKS_Right))
 	{
-		OutputDebugStringW(L"Right key pressed\n");
 		MoveDirection.X = 1.0f;
 		FacingDirection = EPlayerDirection::Right;
+		MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
 		bIsMoving = true;
+	}
+
+	if(inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
+	{
+		bCanJump = false;
+		State = EPlayerState::Jump;
+		MyPhysics->SetVelocityY(-JumpSpeed);
 	}
 
 	SetState(bIsMoving ? EPlayerState::Move : EPlayerState::Idle);
@@ -66,21 +78,15 @@ void APlayer::OnTick(float DeltaTime)
 
 void APlayer::OnRender(Gdiplus::Graphics* InGraphics)
 {
-	Gdiplus::Bitmap* CurrentSprite = Image;
-	if (!CurrentSprite)
-		return;
+	APawn::OnRender(InGraphics);
 
+	Gdiplus::Bitmap* CurrentSprite = nullptr;
 	switch (State)
 	{
-	case EPlayerState::Idle:
-		CurrentSprite = IdleSprite;
-		break;
-	case EPlayerState::Move:
-		CurrentSprite = MoveSprite;
-		break;
+	case EPlayerState::Idle: CurrentSprite = IdleSprite; break;
+	case EPlayerState::Move: CurrentSprite = MoveSprite; break;
 	}
-
-	if (!CurrentSprite)
+	if (!CurrentSprite) 
 		return;
 
 	Gdiplus::GraphicsState originalState = InGraphics->Save();
@@ -91,10 +97,7 @@ void APlayer::OnRender(Gdiplus::Graphics* InGraphics)
 		InGraphics->ScaleTransform(-1.0f, 1.0f);
 	}
 
-	Gdiplus::PointF RenderPos = {
-		-GetSize().X * GetPivot().X,
-		-GetSize().Y * GetPivot().Y
-	};
+	Gdiplus::PointF RenderPos = GetRenderPosition();
 
 	const float FrameWidth = CurrentSprite->GetWidth() / (float)TotalFrames;
 	const float FrameHeight = (float)CurrentSprite->GetHeight();
@@ -102,59 +105,70 @@ void APlayer::OnRender(Gdiplus::Graphics* InGraphics)
 
 	InGraphics->DrawImage(
 		CurrentSprite,
-		Gdiplus::RectF(RenderPos.X, RenderPos.Y, GetSize().X, GetSize().Y),
+		Gdiplus::RectF(
+			RenderPos.X - Position.X, 
+			RenderPos.Y - Position.Y,
+			GetSize().X, GetSize().Y),
 		SourceX, 0, FrameWidth, FrameHeight,
 		Gdiplus::UnitPixel
 	);
 	
 	InGraphics->Restore(originalState);
-
-
-	// --- ÀÔ·Â »óÅÂ µð¹ö±× ·»´õ¸µ ---
-	InputManager& inputManager = InputManager::GetInstance();
-
-	// »ç¿ëÇÒ ÆùÆ®¿Í ºê·¯½¬ »ý¼º
-	Gdiplus::Font debugFont(L"Arial", 12);
-	Gdiplus::SolidBrush blackBrush(Gdiplus::Color(255, 0, 0, 0));
-
-	// È­¸é ÁÂ»ó´Ü¿¡ ÇöÀç ´­¸° Å° Ç¥½Ã
-	if (inputManager.IsKeyPressed(EKeyState::EKS_Left))
-	{
-		InGraphics->DrawString(L"LEFT", -1, &debugFont, Gdiplus::PointF(10, 10), &blackBrush);
-	}
-	if (inputManager.IsKeyPressed(EKeyState::EKS_Right))
-	{
-		InGraphics->DrawString(L"RIGHT", -1, &debugFont, Gdiplus::PointF(10, 30), &blackBrush);
-	}
 }
 
 void APlayer::OnOverlap(AActor* Other)
 {
+	Physics* MyPhysics = GetComponent<Physics>();
+	CircleCollider* MyCollider = GetComponent<CircleCollider>();
+
 	if (ATerrain* Terrain = dynamic_cast<ATerrain*>(Other))
 	{
-		CircleCollider* MyCollider = GetComponent<CircleCollider>();
 		RectangleCollider* TerrainCollider = Terrain->GetComponent<RectangleCollider>();
+		if(!MyPhysics || !MyCollider || !TerrainCollider)
+			return;
 
-		if (MyCollider && TerrainCollider)
+		switch (Terrain->GetTerrainType())
 		{
-			float MyBottom = GetPosition().Y + MyCollider->GetRadius();
-			float TerrainTop = Terrain->GetPosition().Y - TerrainCollider->GetHeight() * 0.5f;
-			float overlap = MyBottom - TerrainTop;
-
-			if (overlap > 0)
+		case ETerrainType::None:
+			return;
+		case ETerrainType::Solid:
 			{
-				Gdiplus::PointF currentPos = GetPosition();
-				SetPosition(currentPos.X, currentPos.Y - overlap);
-			}
-		}
+				float PlayerBottom = MyCollider->GetCenter().Y + MyCollider->GetRadius();
+				float TerrainTop = TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() / 2.f;
+				float overlap = PlayerBottom - TerrainTop;
 
-		Physics* MyPhysics = GetComponent<Physics>();
-		if (MyPhysics && MyPhysics->GetVelocity().Y > 0)
-		{
-			MyPhysics->SetVelocityY(0.0f);
+				if (overlap > 0)
+				{
+					Gdiplus::PointF currentPos = GetPosition();
+					SetPosition(currentPos.X, currentPos.Y - overlap);
+					if (MyPhysics->GetVelocity().Y > 0)
+					{
+						MyPhysics->SetVelocityY(0.0f);
+						bCanJump = true;
+					}
+				}
+			}
+			break;
+		case ETerrainType::OneWay:
+			{
+				float PlayerBottom = MyCollider->GetCenter().Y + MyCollider->GetRadius();
+				float TerrainTop = TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() / 2.f;
+
+				if (MyPhysics->GetVelocity().Y > 0 && PlayerBottom <= TerrainTop + 10.0f) // +10ì€ ì•½ê°„ì˜ ì˜¤ì°¨ í—ˆìš©
+				{
+					// ê²¹ì¹œ ë§Œí¼ í”Œë ˆì´ì–´ë¥¼ ìœ„ë¡œ ë°€ì–´ëƒ„ (ì§€í˜• ìœ„ì— ì„œë„ë¡)
+					float overlap = PlayerBottom - TerrainTop;
+					Gdiplus::PointF currentPos = GetPosition();
+					SetPosition(currentPos.X, currentPos.Y - overlap);
+
+					// ë•…ì— ë‹¿ì•˜ìœ¼ë¯€ë¡œ Yì¶• ì†ë„ë¥¼ 0ìœ¼ë¡œ ë¦¬ì…‹
+					MyPhysics->SetVelocityY(0.0f);
+					bCanJump = true;
+				}
+			}
+			break;
 		}
 	}
-
 }
 
 void APlayer::SetState(EPlayerState InState)

@@ -42,7 +42,6 @@ bool RectangleCollider::CheckCollisionWith(CircleCollider* Other)
 
 bool RectangleCollider::CheckCollisionWith(RectangleCollider* Other)
 {
-    // ³» »ç°¢Çü Á¤º¸
     Gdiplus::PointF MyCenter = this->GetCenter();
     float MyWidth = this->GetWidth();
     float MyHeight = this->GetHeight();
@@ -52,7 +51,6 @@ bool RectangleCollider::CheckCollisionWith(RectangleCollider* Other)
         MyWidth,
         MyHeight);
 
-    // »ó´ë¹æ »ç°¢Çü Á¤º¸
     Gdiplus::PointF OtherCenter = Other->GetCenter();
     float OtherWidth = Other->GetWidth();
     float OtherHeight = Other->GetHeight();
@@ -62,6 +60,6 @@ bool RectangleCollider::CheckCollisionWith(RectangleCollider* Other)
         OtherWidth,
         OtherHeight);
 
-    // AABB Ãæµ¹ °Ë»ç
+    // AABB ï¿½æµ¹ ï¿½Ë»ï¿½
     return !(a.GetRight() < b.GetLeft() || a.GetLeft() > b.GetRight() || a.GetBottom() < b.GetTop() || a.GetTop() > b.GetBottom());
 }

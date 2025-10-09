@@ -1,7 +1,7 @@
 #include "AActor.h"
 
-#include "../Singletons/GameManager.h"
-#include "../Singletons/ResourceManager.h"
+#include "../Managers/GameManager.h"
+#include "../Managers/ResourceManager.h"
 #include <typeinfo>
 
 AActor::AActor(EResourceID InID)
@@ -39,15 +39,7 @@ void AActor::OnRender(Gdiplus::Graphics* InGraphics)
 		return;
 
 	Gdiplus::PointF RenderPos = GetRenderPosition();
-	if (Image)
-	{
-		InGraphics->DrawImage(
-			Image,
-			RenderPos.X, RenderPos.Y,
-			Size.X, Size.Y
-		);
-	}
-	else
+	if(!Image)
 	{
 		Gdiplus::SolidBrush RedBrush(Gdiplus::Color(255, 255, 0, 0));
 		InGraphics->FillEllipse(&RedBrush,
@@ -55,37 +47,48 @@ void AActor::OnRender(Gdiplus::Graphics* InGraphics)
 			Size.X, Size.Y
 		);
 	}
-}
 
+	for (auto const& [key, val] : Components)
+	{
+		val->OnRender(InGraphics);
+	}
+}
 
 void AActor::Destroy()
 {
 	if (!bIsPendingDestroy)
 	{
 		bIsPendingDestroy = true;
-		GameManager::GetInstance().RequestDestroy(this);
+		OwnerScene->RequestDestroy(this);
 	}
 }
 
 void AActor::AddComponent(Component* InComponent)
 {
-	if (InComponent)
+	if (!InComponent)
+		return;
+
+	EComponentType TempType = InComponent->GetType();
+	if (Components.find(TempType) != Components.end())
 	{
-		Components[typeid(*InComponent).hash_code()] = InComponent;
+		delete Components[TempType];
 	}
+	Components[TempType] = InComponent;
+	InComponent->SetOwner(this);
 }
 
 void AActor::RemoveComponent(Component* InComponent)
 {
-	if (InComponent)
-	{
-		auto FindIt = Components.find(typeid(*InComponent).hash_code());
-		if (FindIt != Components.end())
-		{
-			delete FindIt->second;
-			FindIt->second = nullptr;
-		}
-	}
+	if (!InComponent)
+		return;
+
+	EComponentType TempType = InComponent->GetType();
+	if (Components.find(TempType) == Components.end())
+		return;
+
+	delete Components[TempType];
+	Components[TempType] = nullptr;
+	Components.erase(TempType);
 }
 
 Gdiplus::PointF AActor::GetRenderPosition() const

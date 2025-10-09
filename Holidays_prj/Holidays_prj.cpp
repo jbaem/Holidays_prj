@@ -9,12 +9,12 @@
 
 #define MAX_LOADSTRING 100
 
-// 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
-WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
-WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+// Global variable
+HINSTANCE hInst;                        // Current instance
+WCHAR szTitle[MAX_LOADSTRING];          // Title text
+WCHAR szWindowClass[MAX_LOADSTRING];    // Window class name
 
-// 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
+// Code module
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -35,12 +35,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Gdiplus::GdiplusStartupInput StartupInput;
     Gdiplus::GdiplusStartup(&Token, &StartupInput, nullptr);
 
-    // 전역 문자열을 초기화합니다.
+    // Initialize global string
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_HOLIDAYSPRJ, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
-    // 애플리케이션 초기화를 수행합니다:
+    // Initialize application
     if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
@@ -51,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
     ULONGLONG LastTime = GetTickCount64();
 
-    // 기본 메시지 루프입니다:
+    // Message loop
     while(true)
     {
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -65,10 +65,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
+        // Delta time (Absolute time)
         ULONGLONG CurrentTime = GetTickCount64();
         float DeltaTime = (CurrentTime - LastTime) / 1000.0f;
         LastTime = CurrentTime;
+
         GameManager::GetInstance().Tick(DeltaTime);
+
         InvalidateRect(GameManager::GetInstance().GetWindowHandle(), nullptr, FALSE);
     }
 EXIT_LOOP:;
@@ -101,7 +104,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    hInst = hInstance; // Store instance handler into global variable
 
     RECT rc = {
         0, 0,
@@ -120,10 +123,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         szWindowClass,
         L"Holiday Project",
         WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
-        // App Position
+        // App position
         GameManager::GetInstance().GetAppPosition().X,
         GameManager::GetInstance().GetAppPosition().Y,
-        // Screen Size
+        // Screen size
         rc.right - rc.left,
         rc.bottom - rc.top,
         nullptr, nullptr, hInstance, nullptr);
@@ -132,8 +135,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     {
         MessageBox(
             NULL,
-            L"윈도우 생성 실패",
-            L"오류",
+            L"Fail to Create Window",
+            L"ERROR",
             MB_OK | MB_ICONERROR
         );
         return FALSE;
@@ -152,21 +155,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
+        InputManager::GetInstance().Initialize();
+        CollisionManager::GetInstance().Initialize();
+        ResourceManager::GetInstance().Initialize();
         GameManager::GetInstance().Initialize();
-        SceneManager::GetInstance().Initialize();
-        
         break;
+
     case WM_DESTROY:
         PostQuitMessage(0);
-        SceneManager::GetInstance().Destroy();
         GameManager::GetInstance().Destroy();
-
+        ResourceManager::GetInstance().Destroy();
+        CollisionManager::GetInstance().Destroy();
+        InputManager::GetInstance().Destroy();
         break;
+    
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-
+            
             GameManager::GetInstance().Render();
             Gdiplus::Graphics GraphicsInstance(hdc);
             GraphicsInstance.DrawImage(
@@ -177,11 +184,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_ERASEBKGND:
         return 1;
+
     case WM_KEYUP:
         InputManager::GetInstance().HandleKeyState(wParam, false);
         break;
+
+	case WM_SYSKEYDOWN: 
+        if(wParam == VK_MENU) // not use Alt key
+			return 0;
+        break;
+
     case WM_KEYDOWN:
         if (wParam == VK_ESCAPE)
         {
@@ -189,10 +204,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         InputManager::GetInstance().HandleKeyState(wParam, true);
         break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
             case IDM_ABOUT:
@@ -206,13 +221,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
 }
 
-// 정보 대화 상자의 메시지 처리기입니다.
+// Message handler of info box
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -220,7 +236,6 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
         return (INT_PTR)TRUE;
-
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
