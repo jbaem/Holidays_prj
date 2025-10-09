@@ -10,6 +10,10 @@ void ResourceManager::Initialize()
 	LoadResourceFromFile(EResourceID::BackGround3, L"./Images/Tile/BG3.png");
 	LoadResourceFromFile(EResourceID::PlayerIdle, L"./Images/Player/_Idle.png");
 	LoadResourceFromFile(EResourceID::PlayerMove, L"./Images/Player/_Run.png");
+	
+
+
+
 
 	CreateCompositeBackground();
 }

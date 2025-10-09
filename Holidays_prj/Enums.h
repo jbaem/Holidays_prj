@@ -28,12 +28,20 @@ enum class EKeyState : uint8_t
 enum class EResourceID
 {
 	None = 0,
+	// Background
 	BackGround,
 	BackGround1,
 	BackGround2,
 	BackGround3,
+	Decors,
+	// Terrain Sprites
+	Tileset,
+	// Player Sprites // TODO: 분리
 	PlayerIdle,
-	PlayerMove
+	PlayerMove,
+
+
+	// Enemy Sprites // TODO: 분리
 };
 
 enum class EPhysicsLayer : uint32_t
@@ -67,12 +75,25 @@ enum class EPlayerState
 {
 	None = 0,
 	Idle,
-	Move,
-	Dash,
+	Move, //run
+	Dash, //roll
+	Turn,
+
+	Crouch,
+	Slide,
+
 	Jump,
-	Attack,
-	Defense,
-	Damaged
+	Fall,
+
+	Attack1,
+	Attack2,
+
+	Hit,
+	Death,
+	
+	WallHang,
+	WallCimb,
+	WallSlide
 };
 
 enum class EComponentType
