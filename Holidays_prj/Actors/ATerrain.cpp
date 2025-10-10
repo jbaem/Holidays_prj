@@ -5,7 +5,7 @@
 #include "../Managers/GameManager.h"
 
 ATerrain::ATerrain(EResourceID InID, ETerrainType InType)
-	:AActor(InID), Type(InType)
+	:AActor(InID), ResourceType(InID), Type(InType)
 {
 	SetSize(GameManager::ScreenWidth, 50);
 	AddComponent(new RectangleCollider(EPhysicsLayer::Terrain,
@@ -17,4 +17,5 @@ void ATerrain::OnInitialize()
 	GetComponent<RectangleCollider>()->SetLayer(EPhysicsLayer::Terrain);
 	GetComponent<RectangleCollider>()->SetSize(GetSize().X, GetSize().Y);
 }
+
 

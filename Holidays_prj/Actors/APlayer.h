@@ -16,30 +16,24 @@ public:
 	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 	virtual void OnOverlap(AActor* Other) override;
 
-	// Getter
-	inline EPlayerState GetState() const { return State; }
+	void InitStats();
 
-	// Setter
-	void SetState(EPlayerState InState);
+	bool bCanMove = true;
+	bool bIsMoving = false;
+
+	bool bIsCrouching = false;
+	bool bCanCrouch = true;
+
+	bool bCanDash = true;
+	bool bIsDashing = false;
+
+	bool bCanJump = true;
+	bool bIsJumping = false;
 
 private:
-	void UpdateAnimation(float DeltaTime);
-
-	EPlayerState State = EPlayerState::Move;
-	EPlayerDirection FacingDirection = EPlayerDirection::Right;
-
 	const float ImageScale = 2.0f;
 	const Gdiplus::PointF FrameSize = { 120.0f, 80.0f };
 
-	bool bCanJump = false;
 	float JumpSpeed = 600.0f;
-
-	Gdiplus::Bitmap* IdleSprite = nullptr;
-	Gdiplus::Bitmap* MoveSprite = nullptr;
-
-	int CurrentFrameIndex = 0;
-	float AnimationTimer = 0.0f;
-	int TotalFrames = 10;
-	float TimePerFrame = 1.0f / 15.0f;
 };
 

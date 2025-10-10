@@ -17,11 +17,6 @@ void APlayer::OnInitialize()
 	MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
 	static_cast<CircleCollider*>(MyCollider)->SetRadius(GetSize().Y * 0.20f);
 	MyCollider->SetLayer(EPhysicsLayer::Player);
-
-	IdleSprite = ResourceManager::GetInstance().GetImage(EResourceID::PlayerIdle);
-	MoveSprite = ResourceManager::GetInstance().GetImage(EResourceID::PlayerMove);
-
-	SetState(EPlayerState::Idle);
 }
 
 void APlayer::OnTick(float DeltaTime)
@@ -35,33 +30,42 @@ void APlayer::OnTick(float DeltaTime)
 	}
 
 	Gdiplus::PointF MoveDirection = { 0.0f, 0.0f };
-	bool bIsMoving = false;
+	bIsMoving = false;
 
 	InputManager& inputManager = InputManager::GetInstance();
+
+	if (inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
+	{
+		bCanJump = false;
+		bIsJumping = true;
+		MyPhysics->SetVelocityY(-JumpSpeed);
+	}
+	else if (inputManager.IsKeyPressed(EKeyState::EKS_S) && bCanDash)
+	{
+		bCanDash = false;
+		bIsDashing = true;
+		// MyPhysics->SetVelocityY(-JumpSpeed);
+	}
+	else if (inputManager.IsKeyPressed(EKeyState::EKS_Down) && bCanCrouch)
+	{
+		bCanCrouch = false;
+		bIsCrouching = true;
+		// MyPhysics->SetVelocityY(-JumpSpeed);
+	}
+
 	if (inputManager.IsKeyPressed(EKeyState::EKS_Left))
 	{
 		MoveDirection.X = -1.0f;
-		FacingDirection = EPlayerDirection::Left;
 		MyCollider->SetOffset(GetSize().X * 0.05f, GetSize().Y * 0.30f);
 		bIsMoving = true;
 	}
-
 	if (inputManager.IsKeyPressed(EKeyState::EKS_Right))
 	{
 		MoveDirection.X = 1.0f;
-		FacingDirection = EPlayerDirection::Right;
 		MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
 		bIsMoving = true;
 	}
 
-	if(inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
-	{
-		bCanJump = false;
-		State = EPlayerState::Jump;
-		MyPhysics->SetVelocityY(-JumpSpeed);
-	}
-
-	SetState(bIsMoving ? EPlayerState::Move : EPlayerState::Idle);
 	if (bIsMoving)
 	{
 		Move(MoveDirection);
@@ -72,48 +76,12 @@ void APlayer::OnTick(float DeltaTime)
 		MyPhysics->SetVelocityX(MyPhysics->GetVelocity().X * 0.75f);
 	}
 
-	UpdateAnimation(DeltaTime);
 	APawn::OnTick(DeltaTime);
 }
 
 void APlayer::OnRender(Gdiplus::Graphics* InGraphics)
 {
 	APawn::OnRender(InGraphics);
-
-	Gdiplus::Bitmap* CurrentSprite = nullptr;
-	switch (State)
-	{
-	case EPlayerState::Idle: CurrentSprite = IdleSprite; break;
-	case EPlayerState::Move: CurrentSprite = MoveSprite; break;
-	}
-	if (!CurrentSprite) 
-		return;
-
-	Gdiplus::GraphicsState originalState = InGraphics->Save();
-	InGraphics->TranslateTransform(Position.X, Position.Y);
-
-	if (FacingDirection == EPlayerDirection::Left)
-	{
-		InGraphics->ScaleTransform(-1.0f, 1.0f);
-	}
-
-	Gdiplus::PointF RenderPos = GetRenderPosition();
-
-	const float FrameWidth = CurrentSprite->GetWidth() / (float)TotalFrames;
-	const float FrameHeight = (float)CurrentSprite->GetHeight();
-	float SourceX = CurrentFrameIndex * FrameWidth;
-
-	InGraphics->DrawImage(
-		CurrentSprite,
-		Gdiplus::RectF(
-			RenderPos.X - Position.X, 
-			RenderPos.Y - Position.Y,
-			GetSize().X, GetSize().Y),
-		SourceX, 0, FrameWidth, FrameHeight,
-		Gdiplus::UnitPixel
-	);
-	
-	InGraphics->Restore(originalState);
 }
 
 void APlayer::OnOverlap(AActor* Other)
@@ -133,18 +101,63 @@ void APlayer::OnOverlap(AActor* Other)
 			return;
 		case ETerrainType::Solid:
 			{
-				float PlayerBottom = MyCollider->GetCenter().Y + MyCollider->GetRadius();
-				float TerrainTop = TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() / 2.f;
-				float overlap = PlayerBottom - TerrainTop;
+				Gdiplus::PointF MyPos = MyCollider->GetCenter();
+				Gdiplus::PointF TerrainPos = TerrainCollider->GetCenter();
 
-				if (overlap > 0)
+				Gdiplus::Rect MyBox(
+					MyCollider->GetCenter().X - MyCollider->GetRadius(),
+					MyCollider->GetCenter().Y - MyCollider->GetRadius(),
+					MyCollider->GetRadius() * 2,
+					MyCollider->GetRadius() * 2
+				);
+
+				Gdiplus::Rect TerrainBox(
+					TerrainCollider->GetCenter().X - TerrainCollider->GetWidth() * 0.5f,
+					TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() * 0.5f,
+					TerrainCollider->GetWidth(),
+					TerrainCollider->GetHeight()
+				);
+
+				float overlap = 0.0f;
+				Gdiplus::PointF CurrentPos = GetPosition();
+				if (MyBox.GetBottom() > TerrainBox.GetTop() && MyPos.Y < TerrainBox.GetTop()) // above
 				{
-					Gdiplus::PointF currentPos = GetPosition();
-					SetPosition(currentPos.X, currentPos.Y - overlap);
+					overlap = MyBox.GetBottom() - TerrainBox.GetTop();
+					SetPosition(CurrentPos.X, CurrentPos.Y - overlap);
 					if (MyPhysics->GetVelocity().Y > 0)
 					{
 						MyPhysics->SetVelocityY(0.0f);
 						bCanJump = true;
+					}
+				}
+				else if (MyBox.GetTop() < TerrainBox.GetBottom() && MyPos.Y > TerrainBox.GetBottom()) // below
+				{
+					overlap = TerrainBox.GetBottom() - MyBox.GetTop();
+					SetPosition(CurrentPos.X, CurrentPos.Y + overlap);
+					if (MyPhysics->GetVelocity().Y < 0)
+					{
+						MyPhysics->SetVelocityY(0.0f);
+					}
+				}
+				else
+				{
+					if(MyBox.GetRight() > TerrainBox.GetLeft() && MyPos.X < TerrainBox.GetLeft()) // left side
+					{
+						overlap = MyBox.GetRight() - TerrainBox.GetLeft();
+						SetPosition(CurrentPos.X - overlap, CurrentPos.Y);
+						if(MyPhysics->GetVelocity().X > 0)
+						{
+							MyPhysics->SetVelocityX(0.0f);
+						}
+					}
+					else if(MyBox.GetLeft() < TerrainBox.GetRight() && MyPos.X > TerrainBox.GetRight()) // right side
+					{
+						overlap = TerrainBox.GetRight() - MyBox.GetLeft();
+						SetPosition(CurrentPos.X + overlap, CurrentPos.Y);
+						if(MyPhysics->GetVelocity().X < 0)
+						{
+							MyPhysics->SetVelocityX(0.0f);
+						}
 					}
 				}
 			}
@@ -171,36 +184,11 @@ void APlayer::OnOverlap(AActor* Other)
 	}
 }
 
-void APlayer::SetState(EPlayerState InState)
+void APlayer::InitStats()
 {
-	if (State == InState)
-		return;
-
-	State = InState;
-	CurrentFrameIndex = 0;
-	AnimationTimer = 0.0f;
-
-	switch (State)
-	{
-	case EPlayerState::Idle:
-		TotalFrames = 10;
-		TimePerFrame = 1.0f / 15.0f;
-		break;
-	case EPlayerState::Move:
-		TotalFrames = 10;
-		TimePerFrame = 1.0f / 20.0f;
-		break;
-	}
-
-}
-
-void APlayer::UpdateAnimation(float DeltaTime)
-{
-	AnimationTimer += DeltaTime;
-	if (AnimationTimer >= TimePerFrame)
-	{
-		AnimationTimer -= TimePerFrame;
-		CurrentFrameIndex = (CurrentFrameIndex + 1) % TotalFrames;
-	}
-
+	bCanMove = true;
+	bIsMoving = false;
+	
+	bCanJump = true;
+	bIsFloating = false;
 }

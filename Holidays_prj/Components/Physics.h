@@ -18,6 +18,7 @@ public:
 
 	// Getter
 	inline Gdiplus::PointF& GetVelocity() { return Velocity; }
+	inline Gdiplus::PointF& GetAcceleration() { return Acceleration; }
 
 	// Setter
 	inline void SetVelocityX(float InVelocityX) { Velocity.X = InVelocityX; }

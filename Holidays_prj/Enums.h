@@ -36,6 +36,14 @@ enum class EResourceID
 	Decors,
 	// Terrain Sprites
 	Tileset,
+	LeftPlatform,
+	MiddlePlatform,
+	RightPlatform,
+
+	LeftWall,
+	RightWall,
+	TopWall,
+
 	// Player Sprites
 	PlayerIdle,
 	PlayerMove,
@@ -73,18 +81,18 @@ enum class EPlayerState
 	None = 0,
 	Idle,
 	Move, //run
-	Dash, //roll
 	Turn,
+	Dash, //roll
+	Jump,
 
 	Crouch,
+	SlideStart,
 	Slide,
-
-	Jump,
+	SlideEnd,
 	Fall,
 
 	Attack1,
 	Attack2,
-
 	Hit,
 	Death,
 	
@@ -97,7 +105,8 @@ enum class EComponentType
 {
 	None = 0,
 	Collider,
-	Physics
+	Physics,
+	Animator
 };
 
 

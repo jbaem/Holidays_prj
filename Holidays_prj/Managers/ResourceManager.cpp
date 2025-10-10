@@ -4,15 +4,8 @@
 
 void ResourceManager::Initialize()
 {
-	Resources[EResourceID::None] = nullptr;
-	LoadResourceFromFile(EResourceID::BackGround1, L"./Images/Tile/BG1.png");
-	LoadResourceFromFile(EResourceID::BackGround2, L"./Images/Tile/BG2.png");
-	LoadResourceFromFile(EResourceID::BackGround3, L"./Images/Tile/BG3.png");
-	LoadResourceFromFile(EResourceID::PlayerIdle, L"./Images/Player/_Idle.png");
-	LoadResourceFromFile(EResourceID::PlayerMove, L"./Images/Player/_Run.png");
-	
-
-	CreateCompositeBackground();
+	LoadResources();
+	LoadPlayerResources();
 }
 
 void ResourceManager::Destroy()
@@ -23,6 +16,15 @@ void ResourceManager::Destroy()
 		Resource.second = nullptr;
 	}
 	Resources.clear();
+
+	for (auto& Resource : PlayerResources)
+	{
+		delete Resource.second;
+		Resource.second = nullptr;
+	}
+	PlayerResources.clear();
+
+	TileMapping.clear();
 }
 
 Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID)
@@ -31,6 +33,57 @@ Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID)
 		return nullptr;
 
 	return Resources[InID];
+}
+
+Gdiplus::Bitmap* ResourceManager::GetImage(EPlayerState InState)
+{
+	if (PlayerResources.find(InState) == PlayerResources.end())
+		return nullptr;
+
+	return PlayerResources[InState];
+}
+
+
+
+void ResourceManager::LoadResources()
+{
+	Resources[EResourceID::None] = nullptr;
+	LoadResourceFromFile(EResourceID::BackGround1, L"./Images/Tile/BG1.png");
+	LoadResourceFromFile(EResourceID::BackGround2, L"./Images/Tile/BG2.png");
+	LoadResourceFromFile(EResourceID::BackGround3, L"./Images/Tile/BG3.png");
+	CreateCompositeBackground();
+
+	LoadResourceFromFile(EResourceID::Tileset, L"./Images/Tile/Tileset.png");
+	LoadResourceFromFile(EResourceID::Decors, L"./Images/Tile/Decors.png");
+	TilePositionMapInit();
+
+	LoadResourceFromFile(EResourceID::PlayerIdle, L"./Images/Player/_Idle.png");
+	LoadResourceFromFile(EResourceID::PlayerMove, L"./Images/Player/_Run.png");
+}
+
+void ResourceManager::LoadPlayerResources()
+{
+	PlayerResources[EPlayerState::None] = nullptr;
+	LoadResourceFromFile(EPlayerState::Idle, L"./Images/Player/_Idle.png");
+	LoadResourceFromFile(EPlayerState::Move, L"./Images/Player/_Run.png");
+	LoadResourceFromFile(EPlayerState::Turn, L"./Images/Player/_TurnAround.png");
+	LoadResourceFromFile(EPlayerState::Dash, L"./Images/Player/_Roll.png");
+	LoadResourceFromFile(EPlayerState::Jump, L"./Images/Player/_Jump.png");
+
+	LoadResourceFromFile(EPlayerState::Crouch, L"./Images/Player/_Crouch.png");
+	LoadResourceFromFile(EPlayerState::SlideStart, L"./Images/Player/_SlideTransitionStart.png");
+	LoadResourceFromFile(EPlayerState::Slide, L"./Images/Player/_Slide.png");
+	LoadResourceFromFile(EPlayerState::SlideEnd, L"./Images/Player/_SlideTransitionEnd.png");
+	LoadResourceFromFile(EPlayerState::Fall, L"./Images/Player/_Fall.png");
+
+	LoadResourceFromFile(EPlayerState::Attack1, L"./Images/Player/_Attack.png");
+	LoadResourceFromFile(EPlayerState::Attack2, L"./Images/Player/_Attack2.png");
+	LoadResourceFromFile(EPlayerState::Hit, L"./Images/Player/_Hit.png");
+	LoadResourceFromFile(EPlayerState::Death, L"./Images/Player/_Death.png");
+	
+	LoadResourceFromFile(EPlayerState::WallHang, L"./Images/Player/_WallHang.png");
+	LoadResourceFromFile(EPlayerState::WallCimb, L"./Images/Player/_WallClimb.png");
+	LoadResourceFromFile(EPlayerState::WallSlide, L"./Images/Player/_WallSlide.png");
 }
 
 bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPath)
@@ -49,8 +102,34 @@ bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPa
 	delete LoadedImage;
 	LoadedImage = nullptr;
 
-	OutputDebugString(L"Fail to Load Image\n");
+	OutputDebugString(L"Fail to Load Resource Image\n");
 	MessageBox (
+		GameManager::GetInstance().GetWindowHandle(),
+		L"Fail to Load Image",
+		L"ERROR",
+		MB_OK | MB_ICONERROR
+	);
+	return false;
+}
+
+bool ResourceManager::LoadResourceFromFile(EPlayerState InState, const wchar_t* InPath)
+{
+	if (!InPath)
+		return false;
+
+	Gdiplus::Bitmap* LoadedImage = new Gdiplus::Bitmap(InPath);
+	if (LoadedImage->GetLastStatus() == Gdiplus::Ok)
+	{
+		PlayerResources[InState] = LoadedImage;
+		return true;
+	}
+
+	// Fail to Load Image
+	delete LoadedImage;
+	LoadedImage = nullptr;
+
+	OutputDebugString(L"Fail to Load Player Image\n");
+	MessageBox(
 		GameManager::GetInstance().GetWindowHandle(),
 		L"Fail to Load Image",
 		L"ERROR",
@@ -86,4 +165,15 @@ bool ResourceManager::CreateCompositeBackground()
 
 	delete TempGraphics;
 	return true;
+}
+
+void ResourceManager::TilePositionMapInit()
+{
+	TileMapping[EResourceID::LeftPlatform] = { {0.0f, 0.0f}, {24.0f, 48.0f} };
+	TileMapping[EResourceID::MiddlePlatform] = { {12.0f, 0.0f}, {24.0f, 48.0f} };
+	TileMapping[EResourceID::RightPlatform] = { {24.0f, 0.0f}, {24.0f, 48.0f} };
+	
+	TileMapping[EResourceID::LeftWall] = { {0.0f, 60.0f}, {24.0f, 24.0f} };
+	TileMapping[EResourceID::RightWall] = { {24.0f, 60.0f}, {24.0f, 24.0f} };
+	TileMapping[EResourceID::TopWall] = { {12.0f, 72.0f}, {24.0f, 24.0f} };
 }
