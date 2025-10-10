@@ -34,25 +34,6 @@ void APlayer::OnTick(float DeltaTime)
 
 	InputManager& inputManager = InputManager::GetInstance();
 
-	if (inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
-	{
-		bCanJump = false;
-		bIsJumping = true;
-		MyPhysics->SetVelocityY(-JumpSpeed);
-	}
-	else if (inputManager.IsKeyPressed(EKeyState::EKS_S) && bCanDash)
-	{
-		bCanDash = false;
-		bIsDashing = true;
-		// MyPhysics->SetVelocityY(-JumpSpeed);
-	}
-	else if (inputManager.IsKeyPressed(EKeyState::EKS_Down) && bCanCrouch)
-	{
-		bCanCrouch = false;
-		bIsCrouching = true;
-		// MyPhysics->SetVelocityY(-JumpSpeed);
-	}
-
 	if (inputManager.IsKeyPressed(EKeyState::EKS_Left))
 	{
 		MoveDirection.X = -1.0f;
@@ -64,6 +45,29 @@ void APlayer::OnTick(float DeltaTime)
 		MoveDirection.X = 1.0f;
 		MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
 		bIsMoving = true;
+	}
+
+	if (inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
+	{
+		bCanJump = false;
+		bIsJumping = true;
+		MyPhysics->SetVelocityY(-JumpSpeed);
+	}
+	else if (inputManager.IsKeyPressed(EKeyState::EKS_S) && bCanDash)
+	{
+		bCanDash = false;
+		bIsDashing = true;
+
+		bIsMoving = false;
+		// MyPhysics->SetVelocityY(-JumpSpeed);
+	}
+	else if (inputManager.IsKeyPressed(EKeyState::EKS_Down) && bCanCrouch)
+	{
+		bCanCrouch = false;
+		bIsCrouching = true;
+
+		bIsMoving = false;
+		// MyPhysics->SetVelocityY(-JumpSpeed);
 	}
 
 	if (bIsMoving)
