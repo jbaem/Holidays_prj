@@ -19,6 +19,7 @@ public:
 	bool IsAttackState() const { return State == EPlayerState::Attack1 || State == EPlayerState::Attack2; }
 	bool IsOnGround() const { return State == EPlayerState::Idle || State == EPlayerState::Move || State == EPlayerState::Crouch; }
 	bool IsDashState() const { return State == EPlayerState::Dash; }
+	bool IsShootState() const { return State == EPlayerState::Shoot; }
 
 	// Getter & Setter
 	void SetState(EPlayerState InState);

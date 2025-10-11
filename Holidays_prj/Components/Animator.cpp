@@ -176,6 +176,7 @@ std::wstring Animator::PlayerStateToString(EPlayerState state) {
 	case EPlayerState::Move: return L"Move";
 	case EPlayerState::Attack1: return L"Attack1";
 	case EPlayerState::Attack2: return L"Attack2";
+	case EPlayerState::Shoot: return L"Shoot";
 	case EPlayerState::Hit: return L"Hit";
 	case EPlayerState::Death: return L"Death";
 	case EPlayerState::Jump: return L"Jump";

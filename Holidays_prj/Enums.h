@@ -36,6 +36,12 @@ enum class EResourceID
 	BackGround3,
 	Decors,
 
+	// Effects
+	RedEffect,
+	GreenEffect,
+	BlueEffect,
+	PurpleEffect,
+
 	// Terrain Sprites
 	Tileset,
 	LeftPlatform,
@@ -102,6 +108,8 @@ enum class EPlayerState : uint8_t
 
 	Attack1,
 	Attack2,
+	Shoot,
+	
 	Hit,
 	Death,
 };

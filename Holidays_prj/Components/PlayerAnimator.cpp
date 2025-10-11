@@ -75,6 +75,30 @@ PlayerAnimator::PlayerAnimator(AActor* InOwner)
 		)
 	);
 
+	AddAnimation(
+		static_cast<int>(EPlayerState::Shoot),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Shoot),
+			6, 100.0f, false
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Hit),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Hit),
+			1, 300.0f, false
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Death),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Death),
+			10, 30.0f, false
+		)
+	);
+
 	PlayAnimation(static_cast<int>(EPlayerState::Idle));
 }
 
@@ -129,7 +153,21 @@ void PlayerAnimator::UpdateAnimation()
 		return;
 	}
 
-	if (IM.IsKeyPressed(EKey::EK_ATTACK) && !IsAttackState())
+	if (IM.IsKeyPressed(EKey::EK_SHOOT) && !IsDashState() && !IsAttackState() && !IsShootState())
+	{
+		SetState(EPlayerState::Shoot);
+		return;
+	}
+	if(State == EPlayerState::Shoot)
+	{
+		if (bIsFinished)
+		{
+			SetState(EPlayerState::Idle);
+		}
+		return;
+	}
+
+	if (IM.IsKeyPressed(EKey::EK_ATTACK) && !IsDashState() && !IsShootState() && !IsAttackState())
 	{
 		SetState(EPlayerState::Attack1);
 		return;
@@ -171,7 +209,7 @@ void PlayerAnimator::UpdateAnimation()
 		}
 	}
 
-	if (IM.IsKeyPressed(EKey::EK_DASH) && !IsDashState())
+	if (IM.IsKeyPressed(EKey::EK_DASH) && !IsDashState() && !IsShootState() && !IsAttackState())
 	{
 		SetState(EPlayerState::Dash);
 		return;
@@ -186,7 +224,6 @@ void PlayerAnimator::UpdateAnimation()
 		}
 		return;
 	}
-
 
 	if (IM.IsKeyPressed(EKey::EK_DOWN) &&
 		(State == EPlayerState::Idle || State == EPlayerState::Move))

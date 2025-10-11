@@ -56,6 +56,12 @@ void ResourceManager::LoadResources()
 	LoadResourceFromFile(EResourceID::Tileset, L"./Images/Tile/Tileset.png");
 	LoadResourceFromFile(EResourceID::Decors, L"./Images/Tile/Decors.png");
 	TilePositionMapInit();
+
+	LoadResourceFromFile(EResourceID::RedEffect, L"./Images/Effect/RedEffect.png");
+	LoadResourceFromFile(EResourceID::GreenEffect, L"./Images/Effect/GreenEffect.png");
+	LoadResourceFromFile(EResourceID::BlueEffect, L"./Images/Effect/BlueEffect.png");
+	LoadResourceFromFile(EResourceID::PurpleEffect, L"./Images/Effect/PurpleEffect.png");
+
 }
 
 void ResourceManager::LoadPlayerResources()
@@ -70,6 +76,8 @@ void ResourceManager::LoadPlayerResources()
 
 	LoadResourceFromFile(EPlayerState::Attack1, L"./Images/Player/_Attack1.png");
 	LoadResourceFromFile(EPlayerState::Attack2, L"./Images/Player/_Attack2.png");
+	LoadResourceFromFile(EPlayerState::Shoot, L"./Images/Player/_Shoot.png");
+	
 	LoadResourceFromFile(EPlayerState::Hit, L"./Images/Player/_Hit.png");
 	LoadResourceFromFile(EPlayerState::Death, L"./Images/Player/_Death.png");
 }

@@ -186,6 +186,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Holidays_prj.ico" />
+    <Image Include="Images\Effect\RedEffect.png" />
+    <Image Include="Images\Effect\GreenEffect.png" />
+    <Image Include="Images\Effect\PurpleEffect.png" />
+    <Image Include="Images\Effect\BlueEffect.png" />
     <Image Include="Images\Player\_Attack1Default.png" />
     <Image Include="Images\Player\_Attack2Default.png" />
     <Image Include="Images\Player\_Attack2.png" />
@@ -207,6 +211,7 @@
     <Image Include="Images\Player\_JumpFallInbetween.png" />
     <Image Include="Images\Player\_Roll.png" />
     <Image Include="Images\Player\_Run.png" />
+    <Image Include="Images\Player\_Shoot.png" />
     <Image Include="Images\Player\_Slide.png" />
     <Image Include="Images\Player\_SlideFull.png" />
     <Image Include="Images\Player\_SlideTransitionEnd.png" />
