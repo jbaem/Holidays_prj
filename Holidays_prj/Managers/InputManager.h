@@ -14,15 +14,15 @@ public:
 	virtual void Destroy();
 
 	void HandleKeyState(WPARAM InKey, bool InIsPressed);
-	inline const bool IsKeyPressed(EKeyState KeyState) { return KeyPressedMap[KeyState]; }
+	inline const bool IsKeyPressed(EKey KeyState) { return KeyPressedMap[KeyState]; }
 
 	// Getter
-	inline EKeyState GetLastKey() const { return LastKey; }
+	inline EKey GetLastKey() const { return LastKey; }
 
 private:
 	virtual ~InputManager() = default;
 
-	EKeyState LastKey = EKeyState::None;
-	std::unordered_map<EKeyState, bool> KeyPressedMap;
+	EKey LastKey = EKey::EK_NONE;
+	std::unordered_map<EKey, bool> KeyPressedMap;
 };
 

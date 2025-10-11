@@ -5,8 +5,8 @@
 class CircleCollider : public Collider
 {
 public:
-	CircleCollider(EPhysicsLayer InLayer, float InRadius)
-		: Collider(InLayer), Radius(InRadius) {
+	CircleCollider(AActor* InOwner, EPhysicsLayer InLayer, float InRadius)
+		: Collider(InOwner, InLayer), Radius(InRadius) {
 	}
 	virtual ~CircleCollider() = default;
 

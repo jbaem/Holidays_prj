@@ -23,6 +23,6 @@ public:
 
 protected:
 	float Health = 100.0f;
-	float MoveForce = 50000.0f;
+	float MoveForce = 1000.0f;
 };
 

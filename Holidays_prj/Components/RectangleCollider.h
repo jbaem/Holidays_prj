@@ -7,8 +7,8 @@
 class RectangleCollider : public Collider
 {
 public:
-	RectangleCollider(EPhysicsLayer InLayer, float InWidth, float InHeight)
-		:Collider(InLayer), Width(InWidth), Height(InHeight) {
+	RectangleCollider(AActor* InOwner, EPhysicsLayer InLayer, float InWidth, float InHeight)
+		:Collider(InOwner, InLayer), Width(InWidth), Height(InHeight) {
 	}
 	virtual ~RectangleCollider() = default;
 

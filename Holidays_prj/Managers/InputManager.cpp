@@ -2,17 +2,17 @@
 
 void InputManager::Initialize()
 {
-	KeyPressedMap[EKeyState::EKS_Up] = false;
-	KeyPressedMap[EKeyState::EKS_Left] = false;
-	KeyPressedMap[EKeyState::EKS_Down] = false;
-	KeyPressedMap[EKeyState::EKS_Right] = false;
+	KeyPressedMap[EKey::EK_UP] = false;
+	KeyPressedMap[EKey::EK_LEFT] = false;
+	KeyPressedMap[EKey::EK_DOWN] = false;
+	KeyPressedMap[EKey::EK_RIGHT] = false;
 
-	KeyPressedMap[EKeyState::EKS_W] = false;
-	KeyPressedMap[EKeyState::EKS_A] = false;
-	KeyPressedMap[EKeyState::EKS_S] = false;
-	KeyPressedMap[EKeyState::EKS_D] = false;
+	KeyPressedMap[EKey::EK_SHOOT] = false;
+	KeyPressedMap[EKey::EK_JUMP] = false;
+	KeyPressedMap[EKey::EK_DASH] = false;
+	KeyPressedMap[EKey::EK_ATTACK] = false;
 
-	LastKey = EKeyState::None;
+	LastKey = EKey::EK_NONE;
 }
 
 void InputManager::Destroy()
@@ -22,11 +22,11 @@ void InputManager::Destroy()
 
 void InputManager::HandleKeyState(WPARAM InKey, bool bIsPressed)
 {
-	EKeyState KeyState = static_cast<EKeyState>(InKey);
+	EKey KeyState = static_cast<EKey>(InKey);
 	if (KeyPressedMap.find(KeyState) == KeyPressedMap.end())
 		return;
 
 	KeyPressedMap[KeyState] = bIsPressed;
 
-	LastKey = bIsPressed ? KeyState : EKeyState::None;
+	LastKey = bIsPressed ? KeyState : EKey::EK_NONE;
 }

@@ -4,151 +4,218 @@
 #include "../Managers/ResourceManager.h"
 #include "Physics.h"
 
-void PlayerAnimator::OnInitialize()
+#include "../Enums.h"
+
+class Component;
+
+PlayerAnimator::PlayerAnimator(AActor* InOwner)
+	: Animator(InOwner)
 {
-	SpritesMap[EPlayerState::Idle] = ResourceManager::GetInstance().GetImage(EPlayerState::Idle);
-	SpritesMap[EPlayerState::Move] = ResourceManager::GetInstance().GetImage(EPlayerState::Move);
+	AddAnimation(
+		static_cast<int>(EPlayerState::Idle),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Idle),
+			10, 15.0f, true
+		)
+	);
 
-	State = EPlayerState::Idle;
+	AddAnimation(
+		static_cast<int>(EPlayerState::Move),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Move),
+			10, 20.0f, true
+		)
+	);
 
-	Animator::OnInitialize();
+	AddAnimation(
+		static_cast<int>(EPlayerState::Jump),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Jump),
+			3, 10.0f, true
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Fall),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Fall),
+			3, 10.0f, true
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Crouch),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Crouch),
+			1, 100.0f, true
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Dash),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Dash),
+			12, 40.0f, false
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Attack1),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Attack1),
+			4, 20.0f, false
+		)
+	);
+
+	AddAnimation(
+		static_cast<int>(EPlayerState::Attack2),
+		new FAnimation(
+			ResourceManager::GetInstance().GetImage(EPlayerState::Attack2),
+			6, 20.0f, false
+		)
+	);
+
+	PlayAnimation(static_cast<int>(EPlayerState::Idle));
+}
+
+PlayerAnimator::~PlayerAnimator()
+{
+	for(auto const& [key, val] : Animations)
+	{
+		delete val;
+	}
 }
 
 void PlayerAnimator::OnTick(float DeltaTime)
 {
-
-	FacingDirection = Owner->GetComponent<Physics>()->GetVelocity().X >= 0 ?
-		EPlayerDirection::Right :
-		EPlayerDirection::Left;
-
+	Animator::OnTick(DeltaTime);
 	UpdateAnimation();
-	bIsFinished = CurrentAnimation.Update(DeltaTime);
 }
 
 void PlayerAnimator::UpdateAnimation()
 {
-	Gdiplus::PointF& Velocity = Owner->GetComponent<Physics>()->GetVelocity();
-	Gdiplus::PointF& Acceleration = Owner->GetComponent<Physics>()->GetAcceleration();
 	APlayer* Player = static_cast<APlayer*>(Owner);
+	if (!Player) return;
+
+	Physics* MyPhysics = Player->GetComponent<Physics>();
+	if (!MyPhysics) return;
+
+	Gdiplus::PointF& Velocity = MyPhysics->GetVelocity();
+	Gdiplus::PointF& Acceleration = MyPhysics->GetAcceleration();
 
 	InputManager& IM = InputManager::GetInstance();
 
-	if (Player->bIsJumping)
+	if(State == EPlayerState::Death)
+		return;
+
+	if (Player->WasJustHit())
+	{
+		SetState(EPlayerState::Hit);
+	}
+
+	if(State == EPlayerState::Hit)
+	{
+		if (bIsFinished)
+		{
+			if (Player->GetHealth() <= 0)
+			{
+				SetState(EPlayerState::Death);
+			}
+			else
+			{
+				SetState(EPlayerState::Idle);
+			}
+		}
+		return;
+	}
+
+	if (IM.IsKeyPressed(EKey::EK_ATTACK) && !IsAttackState())
+	{
+		SetState(EPlayerState::Attack1);
+		return;
+	}
+	if(State == EPlayerState::Attack1)
+	{
+		if (bIsFinished)
+		{
+			if(IM.IsKeyPressed(EKey::EK_ATTACK))
+				SetState(EPlayerState::Attack2);
+			else
+				SetState(EPlayerState::Idle);
+		}
+		return;
+	}
+	if (State == EPlayerState::Attack2)
+	{
+		if (bIsFinished)
+		{
+			if (IM.IsKeyPressed(EKey::EK_ATTACK))
+				SetState(EPlayerState::Attack1);
+			else
+				SetState(EPlayerState::Idle);
+		}
+		return;
+	}
+
+	if(!Player->IsOnGround())
 	{
 		if (Velocity.Y > 0)
+		{
 			SetState(EPlayerState::Fall);
-		else
+			return;
+		}
+		else if (Velocity.Y < 0)
+		{
 			SetState(EPlayerState::Jump);
-		return;
+			return;
+		}
 	}
 
-	if (Player->bIsDashing)
+	if (IM.IsKeyPressed(EKey::EK_DASH) && !IsDashState())
 	{
 		SetState(EPlayerState::Dash);
-		
+		return;
+	}
+	if(State == EPlayerState::Dash)
+	{
 		if (bIsFinished)
+		{
 			SetState(EPlayerState::Idle);
-		
+			Player->bCanDash = true;
+			Player->bIsDashing = false;
+		}
 		return;
 	}
 
-	if (Player->bIsCrouching)
+
+	if (IM.IsKeyPressed(EKey::EK_DOWN) &&
+		(State == EPlayerState::Idle || State == EPlayerState::Move))
 	{
 		SetState(EPlayerState::Crouch);
-		
-		if(!IM.IsKeyPressed(EKeyState::EKS_Down))
-			SetState(EPlayerState::Idle);
-		
-		return;
 	}
-
-	switch (State)
+	if (State == EPlayerState::Crouch)
 	{
-	case EPlayerState::Move:
-		if(Velocity.X * Acceleration.X < 0)
-			SetState(EPlayerState::Turn);
-		break;
-
-	case EPlayerState::Turn:
-		if (bIsFinished)
-			SetState(EPlayerState::Idle);
-		break;
-
-	case EPlayerState::Fall:
-		if(Velocity.Y == 0)
-			SetState(EPlayerState::Idle);
-		break;
-
-	case EPlayerState::Attack1:
-		break;
-
-	case EPlayerState::Attack2:
-		break;
-
-	case EPlayerState::Hit:
-		if (Player->GetHealth() <= 0)
+		if (!IM.IsKeyPressed(EKey::EK_DOWN))
 		{
-			SetState(EPlayerState::Death);
+			SetState(EPlayerState::Idle);
 		}
-		break;
-
-	case EPlayerState::Death:
-		break;
-
-	// Not used states : Slide
-	// Not used states : Wall interactions
-	default:
-		SetState(EPlayerState::Idle);
-		break;
-	}
-}
-
-
-void PlayerAnimator::OnRender(Gdiplus::Graphics* InGraphics)
-{
-	Gdiplus::Bitmap* CurrentSprite = SpritesMap[State];
-	if (!CurrentSprite)
 		return;
-
-	Gdiplus::GraphicsState originalState = InGraphics->Save();
-	InGraphics->TranslateTransform(Owner->GetPosition().X, Owner->GetPosition().Y);
-	if (FacingDirection == EPlayerDirection::Left)
-	{
-		InGraphics->ScaleTransform(-1.0f, 1.0f);
 	}
-	Gdiplus::PointF RenderPos = Owner->GetRenderPosition();
-	const float FrameWidth = CurrentSprite->GetWidth() / (float)CurrentAnimation.TotalFrames;
-	const float FrameHeight = (float)CurrentSprite->GetHeight();
-	float SourceX = CurrentAnimation.CurrentFrameIndex * FrameWidth;
 
-	InGraphics->DrawImage(
-		CurrentSprite,
-		Gdiplus::RectF(
-			RenderPos.X - Owner->GetPosition().X,
-			RenderPos.Y - Owner->GetPosition().Y,
-			Owner->GetSize().X, Owner->GetSize().Y),
-		SourceX, 0, FrameWidth, FrameHeight,
-		Gdiplus::UnitPixel
-	);
+	if ((IM.IsKeyPressed(EKey::EK_LEFT) || IM.IsKeyPressed(EKey::EK_RIGHT)))
+	{
+		SetState(EPlayerState::Move);
+		return;
+	}
 
-	InGraphics->Restore(originalState);
+	SetState(EPlayerState::Idle);
 }
-
 
 void PlayerAnimator::SetState(EPlayerState InState)
 {
-	if(State == InState)
-		return;
-
+	if(State == InState) return;
 	State = InState;
-	
-	switch (State)
-	{
-	case EPlayerState::Idle:
-		CurrentAnimation.SetAnimation(10, 1.0f / 15.0f, true);
-		break;
-	case EPlayerState::Move:
-		CurrentAnimation.SetAnimation(10, 1.0f / 20.0f, true);
-		break;
-	}
+	bIsFinished = false;
+	CurrentAnimation = Animations[static_cast<int>(State)];
+	CurrentFrameIndex = 0;
 }

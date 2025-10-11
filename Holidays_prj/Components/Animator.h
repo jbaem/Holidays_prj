@@ -1,29 +1,38 @@
 #pragma once
 
-
 #include "Component.h"
 
-#include <unordered_map>
+#include <string>
+#include <map>
 #include "../Enums.h"
 
 #include "FAnimation.h"
 
-
 class Animator : public Component
 {
 public:
-	Animator()
-		: Component(EComponentType::Animator)
+	Animator(AActor* InOwner)
+		: Component(InOwner, EComponentType::Animator)
 	{};
 	virtual ~Animator() = default;
 	
 	virtual void OnTick(float DeltaTime) override;
-	virtual void OnRender(Gdiplus::Graphics* InGraphics) override {};
-	
-protected:
-	const float ImageScale = 2.0f;
-	const Gdiplus::PointF FrameSize = { 120.0f, 80.0f };
+	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 
-	FAnimation CurrentAnimation;
+	void AddAnimation(int AnimationNumber, FAnimation* InAnimation);
+	void PlayAnimation(int AnimationNumber);
+
+	Gdiplus::RectF GetCurrentFrameSourceRect() const;
+	Gdiplus::Bitmap* GetCurrentSpriteSheet() const;
+
+protected:
+	std::wstring PlayerStateToString(EPlayerState state);
+
+	std::map<int, FAnimation*> Animations;
+	FAnimation* CurrentAnimation = nullptr;
+	
+	int CurrentFrameIndex = 0;
+	float AnimationTimer = 0.0f;
+	int bIsFinished = false;
 };
 

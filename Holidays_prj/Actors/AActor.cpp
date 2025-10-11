@@ -38,16 +38,6 @@ void AActor::OnRender(Gdiplus::Graphics* InGraphics)
 	if (!InGraphics)
 		return;
 
-	Gdiplus::PointF RenderPos = GetRenderPosition();
-	if(!Image)
-	{
-		Gdiplus::SolidBrush RedBrush(Gdiplus::Color(255, 255, 0, 0));
-		InGraphics->FillEllipse(&RedBrush,
-			RenderPos.X, RenderPos.Y,
-			Size.X, Size.Y
-		);
-	}
-
 	for (auto const& [key, val] : Components)
 	{
 		val->OnRender(InGraphics);

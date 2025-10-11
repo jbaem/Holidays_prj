@@ -23,7 +23,6 @@ public:
 		return { {0.0f, 0.0f}, {0.0f, 0.0f} };
 	}
 
-
 private:
 	virtual ~ResourceManager() = default;
 

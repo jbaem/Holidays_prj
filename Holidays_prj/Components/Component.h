@@ -8,8 +8,8 @@ class AActor;
 class Component
 {
 public:
-	Component(EComponentType InType)
-		: Type(InType) {};
+	Component(AActor* InOwner, EComponentType InType)
+		: Owner(InOwner), Type(InType) {};
 	virtual ~Component() = default;
 
 	virtual void OnInitialize() {};

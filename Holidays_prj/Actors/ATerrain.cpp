@@ -4,11 +4,11 @@
 #include "../Enums.h"
 #include "../Managers/GameManager.h"
 
-ATerrain::ATerrain(EResourceID InID, ETerrainType InType)
+ATerrain::ATerrain(EResourceID InID, EBlockType InType)
 	:AActor(InID), ResourceType(InID), Type(InType)
 {
 	SetSize(GameManager::ScreenWidth, 50);
-	AddComponent(new RectangleCollider(EPhysicsLayer::Terrain,
+	AddComponent(new RectangleCollider(this, EPhysicsLayer::Terrain,
 		GetSize().X, GetSize().Y));
 }
 

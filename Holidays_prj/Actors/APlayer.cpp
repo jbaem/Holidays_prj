@@ -6,17 +6,26 @@
 
 #include "../Managers/InputManager.h"
 #include "../Managers/ResourceManager.h"
+
+#include "../Components/PlayerAnimator.h"
+
 #include "ATerrain.h"
+
+class Animator;
 
 void APlayer::OnInitialize()
 {
+	APawn::OnInitialize();
+
 	SetSize(FrameSize.X * ImageScale, FrameSize.Y * ImageScale);
 
-	APawn::OnInitialize();
 	Collider* MyCollider = GetComponent<CircleCollider>();
 	MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
 	static_cast<CircleCollider*>(MyCollider)->SetRadius(GetSize().Y * 0.20f);
+
 	MyCollider->SetLayer(EPhysicsLayer::Player);
+
+	AddComponent(new PlayerAnimator(this));
 }
 
 void APlayer::OnTick(float DeltaTime)
@@ -29,45 +38,58 @@ void APlayer::OnTick(float DeltaTime)
 		return;
 	}
 
-	Gdiplus::PointF MoveDirection = { 0.0f, 0.0f };
-	bIsMoving = false;
+	InputManager& IM = InputManager::GetInstance();
 
-	InputManager& inputManager = InputManager::GetInstance();
-
-	if (inputManager.IsKeyPressed(EKeyState::EKS_Left))
-	{
-		MoveDirection.X = -1.0f;
-		MyCollider->SetOffset(GetSize().X * 0.05f, GetSize().Y * 0.30f);
-		bIsMoving = true;
-	}
-	if (inputManager.IsKeyPressed(EKeyState::EKS_Right))
-	{
-		MoveDirection.X = 1.0f;
-		MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
-		bIsMoving = true;
-	}
-
-	if (inputManager.IsKeyPressed(EKeyState::EKS_A) && bCanJump)
+	if (IM.IsKeyPressed(EKey::EK_JUMP) && bCanJump && bIsOnGround)
 	{
 		bCanJump = false;
-		bIsJumping = true;
+		bIsOnGround = false;
 		MyPhysics->SetVelocityY(-JumpSpeed);
 	}
-	else if (inputManager.IsKeyPressed(EKeyState::EKS_S) && bCanDash)
+
+	if (IM.IsKeyPressed(EKey::EK_DASH) && bCanDash && bIsOnGround && !bIsCrouching)
 	{
 		bCanDash = false;
 		bIsDashing = true;
 
-		bIsMoving = false;
-		// MyPhysics->SetVelocityY(-JumpSpeed);
+		if(Look == ELook::Right)
+		{
+			MyPhysics->SetVelocityX(DashSpeed);
+		}
+		else
+		{
+			MyPhysics->SetVelocityX(-DashSpeed);
+		}
+		return;
 	}
-	else if (inputManager.IsKeyPressed(EKeyState::EKS_Down) && bCanCrouch)
-	{
-		bCanCrouch = false;
-		bIsCrouching = true;
 
-		bIsMoving = false;
-		// MyPhysics->SetVelocityY(-JumpSpeed);
+	bIsCrouching = false;
+	if(IM.IsKeyPressed(EKey::EK_DOWN) && bCanCrouch && bIsOnGround)
+	{
+		bIsCrouching = true;
+	}
+	
+	Gdiplus::PointF MoveDirection = { 0.0f, 0.0f };
+	bIsMoving = false;
+	if(bCanMove && !bIsCrouching && !bIsDashing)
+	{
+		float RealMoveSpeed = abs(MyPhysics->GetVelocity().X);
+		if (RealMoveSpeed < MoveSpeed) RealMoveSpeed = MoveSpeed;
+
+		if (IM.IsKeyPressed(EKey::EK_LEFT))
+		{
+			MoveDirection.X = -1.0f;
+			MyCollider->SetOffset(GetSize().X * 0.05f, GetSize().Y * 0.30f);
+			Look = ELook::Left;
+			MyPhysics->SetVelocityX(-RealMoveSpeed);
+		}
+		if (IM.IsKeyPressed(EKey::EK_RIGHT))
+		{
+			MoveDirection.X = 1.0f;
+			MyCollider->SetOffset(-GetSize().X * 0.05f, GetSize().Y * 0.30f);
+			Look = ELook::Right;
+			MyPhysics->SetVelocityX(RealMoveSpeed);
+		}
 	}
 
 	if (bIsMoving)
@@ -78,13 +100,48 @@ void APlayer::OnTick(float DeltaTime)
 	{
 		Physics* MyPhysics = GetComponent<Physics>();
 		MyPhysics->SetVelocityX(MyPhysics->GetVelocity().X * 0.75f);
+		if (abs(MyPhysics->GetVelocity().X) < 5.0f)
+		{
+			MyPhysics->SetVelocityX(0.0f);
+		}
 	}
 
 	APawn::OnTick(DeltaTime);
+
+	bIsOnGround = false;
 }
 
 void APlayer::OnRender(Gdiplus::Graphics* InGraphics)
 {
+	Animator* animator = GetComponent<Animator>();
+	if(!animator)
+		return;
+
+	Gdiplus::Bitmap* CurrentSprite = animator->GetCurrentSpriteSheet();
+	Gdiplus::RectF SourceRect = animator->GetCurrentFrameSourceRect();
+	if (!CurrentSprite)
+		return;
+
+	Gdiplus::GraphicsState originalState = InGraphics->Save();
+	InGraphics->TranslateTransform(Position.X, Position.Y);
+	if(Look == ELook::Left)
+	{
+		InGraphics->ScaleTransform(-1.0f, 1.0f);
+	}
+	Gdiplus::PointF RenderPos = GetRenderPosition();
+
+	InGraphics->DrawImage(
+		CurrentSprite,
+		Gdiplus::RectF(
+			RenderPos.X - Position.X,
+			RenderPos.Y - Position.Y,
+			Size.X, Size.Y),
+		SourceRect.X, SourceRect.Y, SourceRect.Width, SourceRect.Height,
+		Gdiplus::UnitPixel
+	);
+	
+	InGraphics->Restore(originalState);
+
 	APawn::OnRender(InGraphics);
 }
 
@@ -101,9 +158,9 @@ void APlayer::OnOverlap(AActor* Other)
 
 		switch (Terrain->GetTerrainType())
 		{
-		case ETerrainType::None:
+		case EBlockType::None:
 			return;
-		case ETerrainType::Solid:
+		case EBlockType::Solid:
 			{
 				Gdiplus::PointF MyPos = MyCollider->GetCenter();
 				Gdiplus::PointF TerrainPos = TerrainCollider->GetCenter();
@@ -131,6 +188,7 @@ void APlayer::OnOverlap(AActor* Other)
 					if (MyPhysics->GetVelocity().Y > 0)
 					{
 						MyPhysics->SetVelocityY(0.0f);
+						bIsOnGround = true;
 						bCanJump = true;
 					}
 				}
@@ -166,7 +224,7 @@ void APlayer::OnOverlap(AActor* Other)
 				}
 			}
 			break;
-		case ETerrainType::OneWay:
+		case EBlockType::OneWay:
 			{
 				float PlayerBottom = MyCollider->GetCenter().Y + MyCollider->GetRadius();
 				float TerrainTop = TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() / 2.f;
@@ -180,19 +238,11 @@ void APlayer::OnOverlap(AActor* Other)
 
 					// 땅에 닿았으므로 Y축 속도를 0으로 리셋
 					MyPhysics->SetVelocityY(0.0f);
+					bIsOnGround = true;
 					bCanJump = true;
 				}
 			}
 			break;
 		}
 	}
-}
-
-void APlayer::InitStats()
-{
-	bCanMove = true;
-	bIsMoving = false;
-	
-	bCanJump = true;
-	bIsFloating = false;
 }

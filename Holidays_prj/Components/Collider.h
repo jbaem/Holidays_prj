@@ -10,8 +10,8 @@ class RectangleCollider;
 class Collider : public Component
 {
 public:
-	Collider(EPhysicsLayer InLayer)
-		: Component(EComponentType::Collider), Layer(InLayer) 
+	Collider(AActor* InOwner, EPhysicsLayer InLayer)
+		: Component(InOwner, EComponentType::Collider), Layer(InLayer) 
 	{
 	}
 	virtual ~Collider() = default;

@@ -6,26 +6,25 @@
 #include "../Enums.h"
 #include "../Actors/APlayer.h"
 
-class APlayer;
-
 class PlayerAnimator : public Animator
 {
 public:
-	virtual ~PlayerAnimator() = default;
-	virtual void OnInitialize() override;
+	PlayerAnimator(AActor* InOwner);
+	virtual ~PlayerAnimator();
+
 	virtual void OnTick(float DeltaTime) override;
-	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 
-	// Setter
-	void SetState(EPlayerState InState);
-
-private:
 	void UpdateAnimation();
 
-	bool bIsFinished = false;
+	bool IsAttackState() const { return State == EPlayerState::Attack1 || State == EPlayerState::Attack2; }
+	bool IsOnGround() const { return State == EPlayerState::Idle || State == EPlayerState::Move || State == EPlayerState::Crouch; }
+	bool IsDashState() const { return State == EPlayerState::Dash; }
 
-	EPlayerState State = EPlayerState::None;
-	EPlayerDirection FacingDirection = EPlayerDirection::Right;
-	std::unordered_map<EPlayerState, Gdiplus::Bitmap*> SpritesMap;
+	// Getter & Setter
+	void SetState(EPlayerState InState);
+	EPlayerState GetState() const { return State; }
+
+private:
+	EPlayerState State = EPlayerState::Idle;
 };
 

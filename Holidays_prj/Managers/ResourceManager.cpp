@@ -56,34 +56,22 @@ void ResourceManager::LoadResources()
 	LoadResourceFromFile(EResourceID::Tileset, L"./Images/Tile/Tileset.png");
 	LoadResourceFromFile(EResourceID::Decors, L"./Images/Tile/Decors.png");
 	TilePositionMapInit();
-
-	LoadResourceFromFile(EResourceID::PlayerIdle, L"./Images/Player/_Idle.png");
-	LoadResourceFromFile(EResourceID::PlayerMove, L"./Images/Player/_Run.png");
 }
 
 void ResourceManager::LoadPlayerResources()
 {
-	PlayerResources[EPlayerState::None] = nullptr;
 	LoadResourceFromFile(EPlayerState::Idle, L"./Images/Player/_Idle.png");
 	LoadResourceFromFile(EPlayerState::Move, L"./Images/Player/_Run.png");
-	LoadResourceFromFile(EPlayerState::Turn, L"./Images/Player/_TurnAround.png");
+	LoadResourceFromFile(EPlayerState::Crouch, L"./Images/Player/_Crouch.png");
+
 	LoadResourceFromFile(EPlayerState::Dash, L"./Images/Player/_Roll.png");
 	LoadResourceFromFile(EPlayerState::Jump, L"./Images/Player/_Jump.png");
-
-	LoadResourceFromFile(EPlayerState::Crouch, L"./Images/Player/_Crouch.png");
-	LoadResourceFromFile(EPlayerState::SlideStart, L"./Images/Player/_SlideTransitionStart.png");
-	LoadResourceFromFile(EPlayerState::Slide, L"./Images/Player/_Slide.png");
-	LoadResourceFromFile(EPlayerState::SlideEnd, L"./Images/Player/_SlideTransitionEnd.png");
 	LoadResourceFromFile(EPlayerState::Fall, L"./Images/Player/_Fall.png");
 
-	LoadResourceFromFile(EPlayerState::Attack1, L"./Images/Player/_Attack.png");
+	LoadResourceFromFile(EPlayerState::Attack1, L"./Images/Player/_Attack1.png");
 	LoadResourceFromFile(EPlayerState::Attack2, L"./Images/Player/_Attack2.png");
 	LoadResourceFromFile(EPlayerState::Hit, L"./Images/Player/_Hit.png");
 	LoadResourceFromFile(EPlayerState::Death, L"./Images/Player/_Death.png");
-	
-	LoadResourceFromFile(EPlayerState::WallHang, L"./Images/Player/_WallHang.png");
-	LoadResourceFromFile(EPlayerState::WallCimb, L"./Images/Player/_WallClimb.png");
-	LoadResourceFromFile(EPlayerState::WallSlide, L"./Images/Player/_WallSlide.png");
 }
 
 bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPath)

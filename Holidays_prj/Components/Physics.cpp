@@ -1,6 +1,7 @@
 #include "Physics.h"
 
 #include "../Actors/AActor.h"
+#include "../Actors/APlayer.h"
 
 void Physics::OnTick(float DeltaTime)
 {
@@ -10,10 +11,11 @@ void Physics::OnTick(float DeltaTime)
 	}
 
 	Velocity.X += Acceleration.X * DeltaTime;
+	Velocity.Y += Acceleration.Y * DeltaTime;
+
 	if (Velocity.X >  MaxVelocity.X) Velocity.X =  MaxVelocity.X;
 	if (Velocity.X < -MaxVelocity.X) Velocity.X = -MaxVelocity.X;
 
-	Velocity.Y += Acceleration.Y * DeltaTime;
 	if (Velocity.Y >  MaxVelocity.Y) Velocity.Y =  MaxVelocity.Y;
 	if (Velocity.Y < -MaxVelocity.Y) Velocity.Y = -MaxVelocity.Y;
 

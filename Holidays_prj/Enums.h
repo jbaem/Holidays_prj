@@ -11,29 +11,31 @@ enum class GameState : uint8_t
 	GameOver
 };
 
-enum class EKeyState : uint8_t
+enum class EKey : uint8_t
 {
-	None = 0,
-	EKS_Up = VK_UP,
-	EKS_Left = VK_LEFT,
-	EKS_Down = VK_DOWN,
-	EKS_Right = VK_RIGHT,
+	EK_NONE = 0,
 
-	EKS_W = 'W',
-	EKS_A = 'A',
-	EKS_S = 'S',
-	EKS_D = 'D'
+	EK_UP = VK_UP,
+	EK_LEFT = VK_LEFT,
+	EK_DOWN = VK_DOWN,
+	EK_RIGHT = VK_RIGHT,
+
+	EK_SHOOT = 'W',
+	EK_JUMP = 'A',
+	EK_DASH = 'S',
+	EK_ATTACK = 'D'
 };
 
 enum class EResourceID
 {
 	None = 0,
-	// Background
+	// Background, Foreground, Decors
 	BackGround,
 	BackGround1,
 	BackGround2,
 	BackGround3,
 	Decors,
+
 	// Terrain Sprites
 	Tileset,
 	LeftPlatform,
@@ -42,12 +44,25 @@ enum class EResourceID
 
 	LeftWall,
 	RightWall,
-	TopWall,
-
-	// Player Sprites
-	PlayerIdle,
-	PlayerMove,
+	TopWall
 };
+
+enum class EComponentType
+{
+	None = 0,
+	Collider,
+	Physics,
+	Animator
+};
+
+enum class ESceneType
+{
+	PlayerTest,
+	MainMenu,
+	Arena,
+	GameOver
+};
+
 
 enum class EPhysicsLayer : uint32_t
 {
@@ -67,7 +82,6 @@ inline EPhysicsLayer operator|(EPhysicsLayer a, EPhysicsLayer b)
 
 enum class ERenderLayer
 {
-	None = 0,
 	BackGround,
 	Terrain,
 	Player,
@@ -76,56 +90,31 @@ enum class ERenderLayer
 	Misc
 };
 
-enum class EPlayerState
+enum class EPlayerState : uint8_t
 {
-	None = 0,
 	Idle,
-	Move, //run
-	Turn,
-	Dash, //roll
-	Jump,
-
+	Move,
 	Crouch,
-	SlideStart,
-	Slide,
-	SlideEnd,
+
+	Dash,
+	Jump,
 	Fall,
 
 	Attack1,
 	Attack2,
 	Hit,
 	Death,
-	
-	WallHang,
-	WallCimb,
-	WallSlide
 };
 
-enum class EComponentType
-{
-	None = 0,
-	Collider,
-	Physics,
-	Animator
-};
-
-
-enum class ESceneType
-{
-	PlayerTest,
-	MainMenu,
-	Stage1
-};
-
-enum class EPlayerDirection : uint8_t
+enum class ELook : uint8_t
 {
 	Left,
 	Right
 };
 
-enum class ETerrainType : uint8_t
+enum class EBlockType : uint8_t
 {
 	None,
 	Solid,
-	OneWay
+	OneWay	// can pass through from below
 };

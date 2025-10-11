@@ -10,8 +10,8 @@ constexpr float GRAVITY = 98.0f * 5;
 class Physics : public Component
 {
 public:
-	Physics() 
-		: Component(EComponentType::Physics) {}
+	Physics(AActor* InOwner) 
+		: Component(InOwner, EComponentType::Physics) {}
 
 	virtual void OnTick(float DeltaTime) override;
 	void AddForce(const Gdiplus::PointF& InForce);
@@ -32,7 +32,7 @@ private:
 
 	float Mass = 1.0f;
 	float LinearDamping = 0.99f;
-	Gdiplus::PointF MaxVelocity = { 200.0f, 400.0f };
+	Gdiplus::PointF MaxVelocity = { 1000.0f, 400.0f };
 	
 	bool bEnableGravity = true;
 };

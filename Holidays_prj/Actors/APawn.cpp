@@ -7,8 +7,8 @@ void APawn::OnInitialize()
 {
 	AActor::OnInitialize();
 
-	AddComponent(new Physics());
-	AddComponent(new CircleCollider(EPhysicsLayer::Pawn, GetSize().Y * 0.5f));
+	AddComponent(new Physics(this));
+	AddComponent(new CircleCollider(this, EPhysicsLayer::Pawn, GetSize().Y * 0.5f));
 }
 
 void APawn::OnTick(float DeltaTime)

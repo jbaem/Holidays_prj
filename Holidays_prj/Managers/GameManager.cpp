@@ -22,7 +22,7 @@ void GameManager::Initialize()
 		);
 	}
 	
-	MainPlayer = Factory::GetInstance().SpawnActor<APlayer>(EResourceID::PlayerMove, ERenderLayer::Player);
+	MainPlayer = Factory::GetInstance().SpawnActor<APlayer>(EResourceID::None, ERenderLayer::Player);
 	MainSceneHandler = new SceneHandler();
 
 #ifdef TEST:

@@ -186,12 +186,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Holidays_prj.ico" />
-    <Image Include="Images\Player\_Attack.png" />
+    <Image Include="Images\Player\_Attack1Default.png" />
+    <Image Include="Images\Player\_Attack2Default.png" />
     <Image Include="Images\Player\_Attack2.png" />
-    <Image Include="Images\Player\_Attack2NoMovement.png" />
-    <Image Include="Images\Player\_AttackCombo2hit.png" />
-    <Image Include="Images\Player\_AttackComboNoMovement.png" />
-    <Image Include="Images\Player\_AttackNoMovement.png" />
+    <Image Include="Images\Player\_AttackCombo2hitDefault.png" />
+    <Image Include="Images\Player\_AttackCombo.png" />
+    <Image Include="Images\Player\_Attack1.png" />
     <Image Include="Images\Player\_Crouch.png" />
     <Image Include="Images\Player\_CrouchAttack.png" />
     <Image Include="Images\Player\_CrouchFull.png" />

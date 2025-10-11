@@ -180,22 +180,22 @@
     <Image Include="Holidays_prj.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="Images\Player\_Attack.png">
+    <Image Include="Images\Player\_Attack1Default.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Player\_Attack2Default.png">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Images\Player\_Attack2.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="Images\Player\_Attack2NoMovement.png">
+    <Image Include="Images\Player\_AttackCombo2hitDefault.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="Images\Player\_AttackCombo2hit.png">
+    <Image Include="Images\Player\_AttackCombo.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="Images\Player\_AttackComboNoMovement.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="Images\Player\_AttackNoMovement.png">
+    <Image Include="Images\Player\_Attack1.png">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Images\Player\_Crouch.png">
