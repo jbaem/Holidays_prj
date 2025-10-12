@@ -15,7 +15,7 @@ void EnemySpawner::OnTick(float DeltaTime)
         SpawnEnemy();
         TimeSinceLastSpawn = 0.0f;
         
-        if(++TotalSpawnCount % 5 == 0 && SpawnInterval > 1.0f)
+        if(++TotalSpawnCount % LevelUpCount == 0 && SpawnInterval > 1.0f)
         {
             SpawnInterval *= 0.9f;
 		}
