@@ -6,10 +6,12 @@
 
 #include "../Managers/InputManager.h"
 #include "../Managers/ResourceManager.h"
+#include "../Managers/Factory.h"
 
 #include "../Components/PlayerAnimator.h"
 
 #include "ATerrain.h"
+#include "APlayerBullet.h"
 
 class Animator;
 
@@ -60,6 +62,10 @@ void APlayer::OnTick(float DeltaTime)
 		{
 			MyPhysics->SetVelocityX(-DashSpeed);
 		}
+		PlayerAnimator* animator = GetComponent<PlayerAnimator>();
+		if (animator)
+			animator->SetState(EPlayerState::Dash);
+
 		return;
 	}
 
@@ -68,7 +74,28 @@ void APlayer::OnTick(float DeltaTime)
 	{
 		bIsCrouching = true;
 	}
-	
+
+	if (IM.IsKeyPressed(EKey::EK_SHOOT) && !bIsCrouching && !bIsDashing && bCanShoot)
+	{
+		bCanShoot = false;
+		
+		Gdiplus::PointF BulletSpawnPos = { 0.0f, 0.0f };
+		if (Look == ELook::Right)
+		{
+			BulletSpawnPos = { Position.X + 40.0f, Position.Y + 20.0f };
+		}
+		else
+		{
+			BulletSpawnPos = { Position.X - 40.0f, Position.Y + 20.0f };
+		}
+
+		APlayerBullet* NewBullet = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::PlayerBullet, ERenderLayer::Bullet);
+		if (NewBullet)
+			NewBullet->SetPosition(BulletSpawnPos); // Set the position to
+
+		NewBullet->SetDirection(Look == ELook::Right ? Gdiplus::PointF{ 1.0f, 0.0f } : Gdiplus::PointF{ -1.0f, 0.0f });
+	}
+
 	Gdiplus::PointF MoveDirection = { 0.0f, 0.0f };
 	bIsMoving = false;
 	if(bCanMove && !bIsCrouching && !bIsDashing)
@@ -150,6 +177,8 @@ void APlayer::OnOverlap(AActor* Other)
 	Physics* MyPhysics = GetComponent<Physics>();
 	CircleCollider* MyCollider = GetComponent<CircleCollider>();
 
+	float FallingThreshold = 20.0f;
+
 	if (ATerrain* Terrain = dynamic_cast<ATerrain*>(Other))
 	{
 		RectangleCollider* TerrainCollider = Terrain->GetComponent<RectangleCollider>();
@@ -181,7 +210,7 @@ void APlayer::OnOverlap(AActor* Other)
 
 				float overlap = 0.0f;
 				Gdiplus::PointF CurrentPos = GetPosition();
-				if (MyBox.GetBottom() > TerrainBox.GetTop() && MyPos.Y < TerrainBox.GetTop()) // above
+				if (MyBox.GetBottom() > TerrainBox.GetTop() && MyPos.Y < TerrainBox.GetTop() + FallingThreshold) // above // Falling Error Margin
 				{
 					overlap = MyBox.GetBottom() - TerrainBox.GetTop();
 					SetPosition(CurrentPos.X, CurrentPos.Y - overlap);
@@ -229,14 +258,12 @@ void APlayer::OnOverlap(AActor* Other)
 				float PlayerBottom = MyCollider->GetCenter().Y + MyCollider->GetRadius();
 				float TerrainTop = TerrainCollider->GetCenter().Y - TerrainCollider->GetHeight() / 2.f;
 
-				if (MyPhysics->GetVelocity().Y > 0 && PlayerBottom <= TerrainTop + 10.0f) // +10은 약간의 오차 허용
+				if (MyPhysics->GetVelocity().Y > 0 && PlayerBottom <= TerrainTop + FallingThreshold) // Falling Error Margin
 				{
-					// 겹친 만큼 플레이어를 위로 밀어냄 (지형 위에 서도록)
 					float overlap = PlayerBottom - TerrainTop;
 					Gdiplus::PointF currentPos = GetPosition();
 					SetPosition(currentPos.X, currentPos.Y - overlap);
 
-					// 땅에 닿았으므로 Y축 속도를 0으로 리셋
 					MyPhysics->SetVelocityY(0.0f);
 					bIsOnGround = true;
 					bCanJump = true;

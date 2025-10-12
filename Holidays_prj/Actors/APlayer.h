@@ -37,6 +37,8 @@ public:
 	bool bCanDash = true;
 	bool bIsDashing = false;
 
+	bool bCanShoot = true;
+
 private:
 	EPlayerState State = EPlayerState::Idle;
 

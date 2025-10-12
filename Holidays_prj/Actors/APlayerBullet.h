@@ -6,7 +6,8 @@ class APlayerBullet : public ABullet
 {
 public:
 	APlayerBullet(EResourceID InID)
-		: ABullet(InID) {}
+		: ABullet(InID) {
+	}
 	virtual ~APlayerBullet() = default;
 	
 	virtual void OnInitialize() override;

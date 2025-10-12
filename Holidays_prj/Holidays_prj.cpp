@@ -50,6 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
     ULONGLONG LastTime = GetTickCount64();
+    const double targetFrameTime = 1.0 / 60.0; // 60 FPS
 
     // Message loop
     while(true)
@@ -68,6 +69,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         // Delta time (Absolute time)
         ULONGLONG CurrentTime = GetTickCount64();
         float DeltaTime = (CurrentTime - LastTime) / 1000.0f;
+
+        if (DeltaTime < targetFrameTime)
+        {
+            Sleep((DWORD)((targetFrameTime - DeltaTime) * 1000));
+            CurrentTime = GetTickCount64();
+            DeltaTime = (CurrentTime - LastTime) / 1000.0f;
+        }
+
         LastTime = CurrentTime;
 
         GameManager::GetInstance().Tick(DeltaTime);

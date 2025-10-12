@@ -46,18 +46,18 @@ Gdiplus::Bitmap* ResourceManager::GetImage(EPlayerState InState)
 void ResourceManager::LoadResources()
 {
 	Resources[EResourceID::None] = nullptr;
-	LoadResourceFromFile(EResourceID::BackGround1, L"./Images/Tile/BG1.png");
-	LoadResourceFromFile(EResourceID::BackGround2, L"./Images/Tile/BG2.png");
-	LoadResourceFromFile(EResourceID::BackGround3, L"./Images/Tile/BG3.png");
+	LoadResourceFromFile(EResourceID::BackGround1,	L"./Images/Tile/BG1.png");
+	LoadResourceFromFile(EResourceID::BackGround2,	L"./Images/Tile/BG2.png");
+	LoadResourceFromFile(EResourceID::BackGround3,	L"./Images/Tile/BG3.png");
 	CreateCompositeBackground();
 
-	LoadResourceFromFile(EResourceID::Tileset, L"./Images/Tile/Tileset.png");
-	LoadResourceFromFile(EResourceID::Decors, L"./Images/Tile/Decors.png");
+	LoadResourceFromFile(EResourceID::Tileset,		L"./Images/Tile/Tileset.png");
+	LoadResourceFromFile(EResourceID::Decors,		L"./Images/Tile/Decors.png");
 	CropTileset();
 	
-	LoadResourceFromFile(EResourceID::RedEffect, L"./Images/Effect/RedEffect.png");
-	LoadResourceFromFile(EResourceID::GreenEffect, L"./Images/Effect/GreenEffect.png");
-	LoadResourceFromFile(EResourceID::BlueEffect, L"./Images/Effect/BlueEffect.png");
+	LoadResourceFromFile(EResourceID::RedEffect,	L"./Images/Effect/RedEffect.png");
+	LoadResourceFromFile(EResourceID::GreenEffect,	L"./Images/Effect/GreenEffect.png");
+	LoadResourceFromFile(EResourceID::BlueEffect,	L"./Images/Effect/BlueEffect.png");
 	LoadResourceFromFile(EResourceID::PurpleEffect, L"./Images/Effect/PurpleEffect.png");
 	CropEffects();
 
@@ -65,20 +65,20 @@ void ResourceManager::LoadResources()
 
 void ResourceManager::LoadPlayerResources()
 {
-	LoadResourceFromFile(EPlayerState::Idle, L"./Images/Player/_Idle.png");
-	LoadResourceFromFile(EPlayerState::Move, L"./Images/Player/_Run.png");
-	LoadResourceFromFile(EPlayerState::Crouch, L"./Images/Player/_Crouch.png");
+	LoadResourceFromFile(EPlayerState::Idle,	L"./Images/Player/_Idle.png");
+	LoadResourceFromFile(EPlayerState::Move,	L"./Images/Player/_Run.png");
+	LoadResourceFromFile(EPlayerState::Crouch,	L"./Images/Player/_Crouch.png");
 
-	LoadResourceFromFile(EPlayerState::Dash, L"./Images/Player/_Roll.png");
-	LoadResourceFromFile(EPlayerState::Jump, L"./Images/Player/_Jump.png");
-	LoadResourceFromFile(EPlayerState::Fall, L"./Images/Player/_Fall.png");
+	LoadResourceFromFile(EPlayerState::Dash,	L"./Images/Player/_Roll.png");
+	LoadResourceFromFile(EPlayerState::Jump,	L"./Images/Player/_Jump.png");
+	LoadResourceFromFile(EPlayerState::Fall,	L"./Images/Player/_Fall.png");
 
 	LoadResourceFromFile(EPlayerState::Attack1, L"./Images/Player/_Attack1.png");
 	LoadResourceFromFile(EPlayerState::Attack2, L"./Images/Player/_Attack2.png");
-	LoadResourceFromFile(EPlayerState::Shoot, L"./Images/Player/_Shoot.png");
+	LoadResourceFromFile(EPlayerState::Shoot,	L"./Images/Player/_Shoot.png");
 	
-	LoadResourceFromFile(EPlayerState::Hit, L"./Images/Player/_Hit.png");
-	LoadResourceFromFile(EPlayerState::Death, L"./Images/Player/_Death.png");
+	LoadResourceFromFile(EPlayerState::Hit,		L"./Images/Player/_Hit.png");
+	LoadResourceFromFile(EPlayerState::Death,	L"./Images/Player/_Death.png");
 }
 
 bool ResourceManager::LoadResourceFromFile(EResourceID InID, const wchar_t* InPath)
@@ -181,13 +181,13 @@ void ResourceManager::CropEffects()
 {
 	Gdiplus::Bitmap* RedEffectSprite = Resources[EResourceID::RedEffect];
 	Resources[EResourceID::PlayerBullet] = RedEffectSprite->Clone(
-		Gdiplus::Rect(112, 48, 16, 16),
+		Gdiplus::Rect(128, 48, 16, 16),
 		RedEffectSprite->GetPixelFormat()
 	);
 
-	Gdiplus::Bitmap* PurpleEffectSprite = Resources[EResourceID::RedEffect];
+	Gdiplus::Bitmap* PurpleEffectSprite = Resources[EResourceID::PurpleEffect];
 	Resources[EResourceID::EnemyBullet1] = PurpleEffectSprite->Clone(
-		Gdiplus::Rect(112, 48, 16, 16),
+		Gdiplus::Rect(128, 48, 16, 16),
 		PurpleEffectSprite->GetPixelFormat()
 	);
 }

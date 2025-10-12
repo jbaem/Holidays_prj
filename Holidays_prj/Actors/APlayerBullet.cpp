@@ -11,8 +11,6 @@ void APlayerBullet::OnInitialize()
 	APlayer* player = GameManager::GetInstance().GetMainPlayer();
 	if (!player) return;
 
-	Image = Image->Clone(Gdiplus::Rect(112, 48, 16, 16), Image->GetPixelFormat());
-
 	// 방향 설정 (플레이어의 ELook 기준)
 	if (player->GetLook() == ELook::Right)
 		Direction = { 1.0f, 0.0f };
@@ -26,11 +24,11 @@ void APlayerBullet::OnInitialize()
 	};
 	SetPosition(bulletPos);
 
-	Speed = 600.0f;
+	Speed = 400.0f;
 	Damage = 10.0f;
 
-	SetSize(16.0f, 16.0f);
-	GetComponent<CircleCollider>()->SetRadius(4.0f);
+	SetSize(32.0f, 32.0f);
+	GetComponent<CircleCollider>()->SetRadius(Size.X / 2.0f);
 	GetComponent<CircleCollider>()->SetOffset(0.0f, 0.0f);
 	GetComponent<CircleCollider>()->SetLayer(EPhysicsLayer::PlayerBullet);
 }

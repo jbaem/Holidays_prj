@@ -2,9 +2,12 @@
 
 #include "../Managers/InputManager.h"
 #include "../Managers/ResourceManager.h"
+#include "../Managers/Factory.h"
+
 #include "Physics.h"
 
 #include "../Enums.h"
+#include "../Actors/APlayerBullet.h"
 
 class Component;
 
@@ -163,6 +166,7 @@ void PlayerAnimator::UpdateAnimation()
 		if (bIsFinished)
 		{
 			SetState(EPlayerState::Idle);
+			Player->bCanShoot = true;
 		}
 		return;
 	}
@@ -170,14 +174,28 @@ void PlayerAnimator::UpdateAnimation()
 	if (IM.IsKeyPressed(EKey::EK_ATTACK) && !IsDashState() && !IsShootState() && !IsAttackState())
 	{
 		SetState(EPlayerState::Attack1);
+		APlayerBullet* AttackRange1 = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::None, ERenderLayer::Bullet);
+		AttackRange1->SetPosition(Player->GetPosition().X + 30.0f, Player->GetPosition().Y + 40.0f);
+		AttackRange1->SetDirection({ 0, 0 });
+		AttackRange1->GetComponent<CircleCollider>()->SetRadius(60.0f);
+		AttackRange1->GetComponent<CircleCollider>()->SetLayer(EPhysicsLayer::PlayerBullet);
+		AttackRange1->SetLifeTime(0.4f);
 		return;
 	}
 	if(State == EPlayerState::Attack1)
 	{
 		if (bIsFinished)
 		{
-			if(IM.IsKeyPressed(EKey::EK_ATTACK))
+			if (IM.IsKeyPressed(EKey::EK_ATTACK))
+			{
 				SetState(EPlayerState::Attack2);
+				APlayerBullet* AttackRange2 = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::None, ERenderLayer::Bullet);
+				AttackRange2->SetPosition(Player->GetPosition().X + 30.0f, Player->GetPosition().Y + 40.0f);
+				AttackRange2->SetDirection({ 0, 0 });
+				AttackRange2->GetComponent<CircleCollider>()->SetRadius(60.0f);
+				AttackRange2->GetComponent<CircleCollider>()->SetLayer(EPhysicsLayer::PlayerBullet);
+				AttackRange2->SetLifeTime(0.6f);
+			}
 			else
 				SetState(EPlayerState::Idle);
 		}
@@ -223,6 +241,11 @@ void PlayerAnimator::UpdateAnimation()
 			Player->bIsDashing = false;
 		}
 		return;
+	}
+	else
+	{
+		Player->bCanDash = true;
+		Player->bIsDashing = false;
 	}
 
 	if (IM.IsKeyPressed(EKey::EK_DOWN) &&
