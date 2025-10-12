@@ -5,6 +5,7 @@
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "CollisionManager.h"
+#include "SceneManager.h"
 
 #define TEST // TODO : should change to comment
 
@@ -23,8 +24,7 @@ void GameManager::Initialize()
 	}
 	
 	MainPlayer = Factory::GetInstance().SpawnActor<APlayer>(EResourceID::None, ERenderLayer::Player);
-	MainSceneHandler = new SceneHandler();
-
+	
 #ifdef TEST:
 	State = GameState::PlayerTest;
 #else
@@ -34,9 +34,6 @@ void GameManager::Initialize()
 
 void GameManager::Destroy()
 {
-	delete MainSceneHandler;
-	MainSceneHandler = nullptr;
-
 	delete MainPlayer;
 	MainPlayer = nullptr;
 
@@ -50,7 +47,7 @@ void GameManager::Tick(float DeltaTime)
 {
 	if (State == GameState::Playing || State == GameState::PlayerTest)
 	{
-		MainSceneHandler->Tick(DeltaTime);
+		SceneManager::GetInstance().Tick(DeltaTime);
 	}
 }
 
@@ -60,7 +57,7 @@ void GameManager::Render()
 		return;
 
 	BackBufferGraphics->Clear(Gdiplus::Color(255, 0, 0, 0));
-	MainSceneHandler->Render(BackBufferGraphics);
+	SceneManager::GetInstance().Render(BackBufferGraphics);
 }
 
 void GameManager::SetGameState(GameState InState)

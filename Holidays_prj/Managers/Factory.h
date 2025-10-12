@@ -3,6 +3,7 @@
 #include "TSingleton.h"
 
 #include "GameManager.h"
+#include "SceneManager.h"
 #include "../Actors/AActor.h"
 
 class Factory : public TSingleton<Factory>
@@ -16,6 +17,7 @@ public:
 		T* NewActor = new T(InID);
 		NewActor->SetLayer(InLayer);
 		NewActor->OnInitialize();
+		SceneManager::GetInstance().RegisterActor(NewActor);
 		return NewActor;
 	}
 

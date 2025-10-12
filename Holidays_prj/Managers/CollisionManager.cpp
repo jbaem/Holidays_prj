@@ -10,15 +10,22 @@ void CollisionManager::Initialize()
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::Enemy);
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::EnemyBullet);
 	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::Terrain);
+	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::SolidTerrain);
+	SetCollisionRule(EPhysicsLayer::Player, EPhysicsLayer::OneWayTerrain);
 
 	// Enemy
 	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::PlayerBullet);
 	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::Terrain);
+	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::SolidTerrain);
+	SetCollisionRule(EPhysicsLayer::Enemy, EPhysicsLayer::OneWayTerrain);
 
 	// PlayerBullet
-	SetCollisionRule(EPhysicsLayer::PlayerBullet, EPhysicsLayer::Terrain);
+	//SetCollisionRule(EPhysicsLayer::PlayerBullet, EPhysicsLayer::Terrain);
+	//SetCollisionRule(EPhysicsLayer::PlayerBullet, EPhysicsLayer::SolidTerrain);
+
 	// EnemyBullet
-	SetCollisionRule(EPhysicsLayer::EnemyBullet, EPhysicsLayer::Terrain);
+	//SetCollisionRule(EPhysicsLayer::EnemyBullet, EPhysicsLayer::Terrain);
+	//SetCollisionRule(EPhysicsLayer::EnemyBullet, EPhysicsLayer::SolidTerrain);
 }
 
 void CollisionManager::Destroy()

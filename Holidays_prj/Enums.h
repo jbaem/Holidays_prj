@@ -42,15 +42,14 @@ enum class EResourceID
 	BlueEffect,
 	PurpleEffect,
 
-	// Terrain Sprites
-	Tileset,
-	LeftPlatform,
-	MiddlePlatform,
-	RightPlatform,
+	PlayerBullet,
+	EnemyBullet1,
 
-	LeftWall,
-	RightWall,
-	TopWall
+
+	// Tile Sprites
+	Tileset,
+	Platform,
+	Wall
 };
 
 enum class EComponentType
@@ -74,16 +73,26 @@ enum class EPhysicsLayer : uint32_t
 {
 	None			= 0,
 	Terrain			= 1 << 0,
-	Pawn			= 1 << 1,
-	Player			= 1 << 2,
-	Enemy			= 1 << 3,
-	PlayerBullet	= 1 << 4,
-	EnemyBullet		= 1 << 5,
+	SolidTerrain	= 1 << 1,
+	OneWayTerrain	= 1 << 2,
+	
+	Pawn			= 1 << 10,
+	Player			= 1 << 11,
+	Enemy			= 1 << 12,
+
+	Bullet			= 1 << 20,
+	PlayerBullet	= 1 << 21,
+	EnemyBullet		= 1 << 22,
+	
 	All				= 0xFFFFFFFF
 };
 inline EPhysicsLayer operator|(EPhysicsLayer a, EPhysicsLayer b)
 {
 	return static_cast<EPhysicsLayer>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+inline EPhysicsLayer operator&(EPhysicsLayer a, EPhysicsLayer b)
+{
+	return static_cast<EPhysicsLayer>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
 enum class ERenderLayer

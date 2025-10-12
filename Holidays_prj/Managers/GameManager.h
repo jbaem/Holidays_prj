@@ -5,7 +5,6 @@
 #include "../Common.h"
 
 #include "TSingleton.h"
-#include "SceneHandler.h"
 #include "CollisionManager.h"
 
 #include "../Actors/APlayer.h"
@@ -31,6 +30,7 @@ public:
 	inline const Gdiplus::Point& GetAppPosition() const { return AppPosition; }
 	inline Gdiplus::Bitmap* GetBackBuffer() { return BackBuffer; };
 	inline APlayer* GetMainPlayer() { return MainPlayer; }
+	
 
 	// Setter
 	inline void SetWindowHandle(HWND InHWnd)
@@ -50,7 +50,6 @@ private:
 	Gdiplus::Graphics* BackBufferGraphics = nullptr;
 
 	APlayer* MainPlayer = nullptr;
-	SceneHandler* MainSceneHandler = nullptr;
 	
 	GameState State = GameState::Playing;
 };

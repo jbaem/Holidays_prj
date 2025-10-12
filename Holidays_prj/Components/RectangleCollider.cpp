@@ -60,6 +60,6 @@ bool RectangleCollider::CheckCollisionWith(RectangleCollider* Other)
         OtherWidth,
         OtherHeight);
 
-    // AABB �浹 �˻�
+    //AABB Collision
     return !(a.GetRight() < b.GetLeft() || a.GetLeft() > b.GetRight() || a.GetBottom() < b.GetTop() || a.GetTop() > b.GetBottom());
 }

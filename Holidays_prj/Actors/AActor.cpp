@@ -2,6 +2,7 @@
 
 #include "../Managers/GameManager.h"
 #include "../Managers/ResourceManager.h"
+#include "../Managers/SceneManager.h"
 #include <typeinfo>
 
 AActor::AActor(EResourceID InID)
@@ -23,6 +24,13 @@ AActor::~AActor()
 		delete val;
 	}
 	Components.clear();
+}
+
+void AActor::OnInitialize()
+{
+	OwnerScene = SceneManager::GetInstance().GetCurrentScene();
+	if(OwnerScene)
+		OwnerScene->RegisterActor(this);
 }
 
 void AActor::OnTick(float DeltaTime)

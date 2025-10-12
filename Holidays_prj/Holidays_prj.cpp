@@ -159,10 +159,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CollisionManager::GetInstance().Initialize();
         ResourceManager::GetInstance().Initialize();
         GameManager::GetInstance().Initialize();
+		SceneManager::GetInstance().Initialize();
         break;
 
     case WM_DESTROY:
         PostQuitMessage(0);
+		SceneManager::GetInstance().Destroy();
         GameManager::GetInstance().Destroy();
         ResourceManager::GetInstance().Destroy();
         CollisionManager::GetInstance().Destroy();

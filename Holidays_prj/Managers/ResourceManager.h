@@ -15,13 +15,6 @@ public:
 	Gdiplus::Bitmap* GetImage(EResourceID InID);
 	Gdiplus::Bitmap* GetImage(EPlayerState InState);
 	
-	// Getter
-	const std::pair<Gdiplus::PointF, Gdiplus::PointF> GetTileMapping(EResourceID InID) const
-	{
-		if (TileMapping.find(InID) != TileMapping.end())
-			return TileMapping.at(InID);
-		return { {0.0f, 0.0f}, {0.0f, 0.0f} };
-	}
 
 private:
 	virtual ~ResourceManager() = default;
@@ -33,9 +26,9 @@ private:
 	bool LoadResourceFromFile(EPlayerState InState, const wchar_t* InPath);
 	
 	bool CreateCompositeBackground();
-	void TilePositionMapInit();
+	void CropTileset();
+	void CropEffects();
 
-	std::unordered_map<EResourceID, std::pair<Gdiplus::PointF, Gdiplus::PointF>> TileMapping;
 	std::unordered_map<EResourceID, Gdiplus::Bitmap*> Resources;
 	std::unordered_map<EPlayerState, Gdiplus::Bitmap*> PlayerResources;
 };

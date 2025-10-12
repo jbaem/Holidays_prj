@@ -17,7 +17,7 @@ public:
 	virtual ~AActor();
 
 	// Lifecycle
-	virtual void OnInitialize() {}
+	virtual void OnInitialize();
 	virtual void OnTick(float DeltaTime);
 	virtual void OnRender(Gdiplus::Graphics* InGraphics);
 	virtual void OnOverlap(AActor* Other) {};

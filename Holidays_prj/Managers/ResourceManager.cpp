@@ -23,8 +23,6 @@ void ResourceManager::Destroy()
 		Resource.second = nullptr;
 	}
 	PlayerResources.clear();
-
-	TileMapping.clear();
 }
 
 Gdiplus::Bitmap* ResourceManager::GetImage(EResourceID InID)
@@ -55,12 +53,13 @@ void ResourceManager::LoadResources()
 
 	LoadResourceFromFile(EResourceID::Tileset, L"./Images/Tile/Tileset.png");
 	LoadResourceFromFile(EResourceID::Decors, L"./Images/Tile/Decors.png");
-	TilePositionMapInit();
-
+	CropTileset();
+	
 	LoadResourceFromFile(EResourceID::RedEffect, L"./Images/Effect/RedEffect.png");
 	LoadResourceFromFile(EResourceID::GreenEffect, L"./Images/Effect/GreenEffect.png");
 	LoadResourceFromFile(EResourceID::BlueEffect, L"./Images/Effect/BlueEffect.png");
 	LoadResourceFromFile(EResourceID::PurpleEffect, L"./Images/Effect/PurpleEffect.png");
+	CropEffects();
 
 }
 
@@ -163,13 +162,32 @@ bool ResourceManager::CreateCompositeBackground()
 	return true;
 }
 
-void ResourceManager::TilePositionMapInit()
+
+void ResourceManager::CropTileset()
 {
-	TileMapping[EResourceID::LeftPlatform] = { {0.0f, 0.0f}, {24.0f, 48.0f} };
-	TileMapping[EResourceID::MiddlePlatform] = { {12.0f, 0.0f}, {24.0f, 48.0f} };
-	TileMapping[EResourceID::RightPlatform] = { {24.0f, 0.0f}, {24.0f, 48.0f} };
+	Gdiplus::Bitmap* TileSprite = Resources[EResourceID::Tileset];
+	Resources[EResourceID::Platform] = TileSprite->Clone(
+		Gdiplus::Rect(12, 0, 24, 24),
+		TileSprite->GetPixelFormat()
+	);
 	
-	TileMapping[EResourceID::LeftWall] = { {0.0f, 60.0f}, {24.0f, 24.0f} };
-	TileMapping[EResourceID::RightWall] = { {24.0f, 60.0f}, {24.0f, 24.0f} };
-	TileMapping[EResourceID::TopWall] = { {12.0f, 72.0f}, {24.0f, 24.0f} };
+	Resources[EResourceID::Wall] = TileSprite->Clone(
+		Gdiplus::Rect(90, 55, 24, 24),
+		TileSprite->GetPixelFormat()
+	);
+}
+
+void ResourceManager::CropEffects()
+{
+	Gdiplus::Bitmap* RedEffectSprite = Resources[EResourceID::RedEffect];
+	Resources[EResourceID::PlayerBullet] = RedEffectSprite->Clone(
+		Gdiplus::Rect(112, 48, 16, 16),
+		RedEffectSprite->GetPixelFormat()
+	);
+
+	Gdiplus::Bitmap* PurpleEffectSprite = Resources[EResourceID::RedEffect];
+	Resources[EResourceID::EnemyBullet1] = PurpleEffectSprite->Clone(
+		Gdiplus::Rect(112, 48, 16, 16),
+		PurpleEffectSprite->GetPixelFormat()
+	);
 }
