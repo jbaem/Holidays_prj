@@ -19,6 +19,9 @@ void APlayer::OnInitialize()
 {
 	APawn::OnInitialize();
 
+	MaxHealth = 50.0f;
+	Health = 50.0f;
+
 	SetSize(FrameSize.X * ImageScale, FrameSize.Y * ImageScale);
 
 	Collider* MyCollider = GetComponent<CircleCollider>();
@@ -91,7 +94,7 @@ void APlayer::OnTick(float DeltaTime)
 
 		APlayerBullet* NewBullet = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::PlayerBullet, ERenderLayer::Bullet);
 		if (NewBullet)
-			NewBullet->SetPosition(BulletSpawnPos); // Set the position to
+			NewBullet->SetPosition(BulletSpawnPos); 
 
 		NewBullet->SetDirection(Look == ELook::Right ? Gdiplus::PointF{ 1.0f, 0.0f } : Gdiplus::PointF{ -1.0f, 0.0f });
 	}
@@ -271,5 +274,25 @@ void APlayer::OnOverlap(AActor* Other)
 			}
 			break;
 		}
+	}
+}
+
+void APlayer::TakeDamage(float InDamage)
+{
+	Health -= InDamage;
+	if (Health < 0.01f)
+	{
+		GameManager::GetInstance().SetGameState(GameState::GameOver);
+	}
+
+	State = EPlayerState::Hit;
+
+	Physics* MyPhysics = GetComponent<Physics>();
+	if (MyPhysics)
+	{
+		MyPhysics->SetVelocityX(
+			Look == ELook::Right ? -400.0f : 400.0f
+		);
+		MyPhysics->SetVelocityY(-100.0f);
 	}
 }

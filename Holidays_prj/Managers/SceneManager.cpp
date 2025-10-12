@@ -2,6 +2,7 @@
 
 #include "../Scenes/Scene.h"
 #include "../Scenes/TestScene.h"
+#include "UIManager.h"
 
 
 void SceneManager::Initialize()
@@ -24,6 +25,7 @@ void SceneManager::Tick(float DeltaTime)
 		return;
 	CurrentScene->OnTick(DeltaTime);
 }
+
 
 void SceneManager::Render(Gdiplus::Graphics* InGraphics)
 {

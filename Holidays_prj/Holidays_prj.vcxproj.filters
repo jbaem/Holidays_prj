@@ -114,6 +114,12 @@
     <ClInclude Include="Managers\SceneManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\EnemySpawner.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UIManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Holidays_prj.cpp">
@@ -183,6 +189,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Managers\SceneManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\EnemySpawner.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UIManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -322,6 +334,15 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Images\Effect\BlueEffect.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Golem\_GolemSheet.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Golem\_Weapon.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\Golem\_Golem.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

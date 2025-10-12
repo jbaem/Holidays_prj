@@ -1,31 +1,32 @@
 #pragma once
 
 #include "APawn.h"
-#include "APlayer.h"
+#include "../Components/Physics.h"
+#include "../Components/CircleCollider.h"
+#include "../Components/RectangleCollider.h"
+#include "../Managers/ResourceManager.h"
+#include "../Components/PlayerAnimator.h"
 
 class AEnemy : public APawn
 {
 public:
 	AEnemy() = delete;
-	AEnemy(EResourceID InID) : APawn(InID) {};
-	virtual ~AEnemy() = default;
+	AEnemy(EResourceID InID)
+		: APawn(InID)
+	{
+	}
 
 	virtual void OnInitialize() override;
 	virtual void OnTick(float DeltaTime) override;
 	virtual void OnRender(Gdiplus::Graphics* InGraphics) override;
 	virtual void OnOverlap(AActor* Other) override;
-	
-	//void SetState() {}
+	virtual void Destroy() override;
 
-protected:
-	const float ImageScale = 2.0f;
-	const Gdiplus::PointF FrameSize = { 120.0f, 80.0f };
+	virtual void TakeDamage(float InDamage) override;
 
-	float PatrolRadius = 200.0f;
+private:
+	Gdiplus::PointF FrameSize = { 72.0f, 72.0f }; 
+	float ImageScale = 2.0f; 
 
-	APlayer* MainPlayer = nullptr;
-
-	Gdiplus::PointF NextPosition = { 0.0f, 0.0f };
-	
-	Gdiplus::PointF StartPosition = { 0.0f, 0.0f };
+	ELook Look = ELook::Left;
 };

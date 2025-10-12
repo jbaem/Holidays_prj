@@ -138,6 +138,7 @@
     <ClInclude Include="Components\Animator.h" />
     <ClInclude Include="Components\FAnimation.h" />
     <ClInclude Include="Components\PlayerAnimator.h" />
+    <ClInclude Include="Managers\EnemySpawner.h" />
     <ClInclude Include="Managers\SceneManager.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Components\CircleCollider.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Scenes\TestScene.h" />
     <ClInclude Include="Actors\ATerrain.h" />
     <ClInclude Include="Managers\CollisionManager.h" />
+    <ClInclude Include="Managers\UIManager.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -172,6 +174,7 @@
     <ClCompile Include="Actors\AEnemyBullet.cpp" />
     <ClCompile Include="Actors\APlayerBullet.cpp" />
     <ClCompile Include="Components\Animator.cpp" />
+    <ClCompile Include="Managers\EnemySpawner.cpp" />
     <ClCompile Include="Managers\CollisionManager.cpp" />
     <ClCompile Include="Components\PlayerAnimator.cpp" />
     <ClCompile Include="Managers\SceneManager.cpp" />
@@ -185,6 +188,7 @@
     <ClCompile Include="Holidays_prj.cpp" />
     <ClCompile Include="Scenes\TestScene.cpp" />
     <ClCompile Include="Actors\ATerrain.cpp" />
+    <ClCompile Include="Managers\UIManager.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +200,9 @@
     <Image Include="Images\Effect\GreenEffect.png" />
     <Image Include="Images\Effect\PurpleEffect.png" />
     <Image Include="Images\Effect\BlueEffect.png" />
+    <Image Include="Images\Golem\_Golem.png" />
+    <Image Include="Images\Golem\_GolemSheet.png" />
+    <Image Include="Images\Golem\_Weapon.png" />
     <Image Include="Images\Player\_Attack1Default.png" />
     <Image Include="Images\Player\_Attack2Default.png" />
     <Image Include="Images\Player\_Attack2.png" />

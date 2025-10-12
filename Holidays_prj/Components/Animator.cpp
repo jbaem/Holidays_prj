@@ -70,58 +70,8 @@ void Animator::OnRender(Gdiplus::Graphics* InGraphics)
 	InGraphics->Restore(originalState);
 
 
-	// Display Player State as text
-	EPlayerState playerState = EPlayerState::Idle;
-	if (Owner) {
-		// Owner가 APlayer 타입일 때만 상태를 가져옴
-		APlayer* player = dynamic_cast<APlayer*>(Owner);
-		if (player) {
-			playerState = player->GetComponent<PlayerAnimator>()->GetState(); // GetState() 함수가 있다고 가정
-		}
-	}
-	std::wstring stateText = PlayerStateToString(playerState);
-
-	Gdiplus::Font font(L"Arial", 16);
-	Gdiplus::SolidBrush brush(Gdiplus::Color(255, 255, 255, 255));
-	InGraphics->DrawString(
-		stateText.c_str(),
-		-1,
-		&font,
-		Gdiplus::PointF(10, 10), // 화면 왼쪽 위
-		&brush
-	);
-
-	APlayer* Player = static_cast<APlayer*>(Owner);
-	if (Player)
-	{
-		Physics* MyPhysics = Player->GetComponent<Physics>();
-		if (MyPhysics)
-		{
-			float velocityX = MyPhysics->GetVelocity().X;
-			float velocityY = MyPhysics->GetVelocity().Y;
-			std::wstring velocityTextX = L"Velocity.X: " + std::to_wstring(velocityX);
-			std::wstring velocityTextY = L"Velocity.Y: " + std::to_wstring(velocityY);
-
-			Gdiplus::Font font(L"Arial", 16);
-			Gdiplus::SolidBrush brush(Gdiplus::Color(255, 255, 255, 255));
-			InGraphics->DrawString(
-				velocityTextX.c_str(),
-				-1,
-				&font,
-				Gdiplus::PointF(10, 100), // 화면 왼쪽 위
-				&brush
-			);
-
-			InGraphics->DrawString(
-				velocityTextY.c_str(),
-				-1,
-				&font,
-				Gdiplus::PointF(10, 200), // 화면 왼쪽 위
-				&brush
-			);
-		}
-	}
-
+	// DEBUG : Display Player State as text
+	//TestDisplay(InGraphics);
 }
 
 // Add Animation to map
@@ -184,5 +134,58 @@ std::wstring Animator::PlayerStateToString(EPlayerState state) {
 	case EPlayerState::Dash: return L"Dash";
 	case EPlayerState::Crouch: return L"Crouch";
 	default: return L"Unknown";
+	}
+}
+
+void Animator::TestDisplay(Gdiplus::Graphics* InGraphics)
+{
+	EPlayerState playerState = EPlayerState::Idle;
+	if (Owner) {
+		APlayer* player = dynamic_cast<APlayer*>(Owner);
+		if (player) {
+			playerState = player->GetComponent<PlayerAnimator>()->GetState();
+		}
+	}
+	std::wstring stateText = PlayerStateToString(playerState);
+
+	Gdiplus::Font font(L"Arial", 16);
+	Gdiplus::SolidBrush brush(Gdiplus::Color(255, 255, 255, 255));
+	InGraphics->DrawString(
+		stateText.c_str(),
+		-1,
+		&font,
+		Gdiplus::PointF(10, 10),
+		&brush
+	);
+
+	APlayer* Player = static_cast<APlayer*>(Owner);
+	if (Player)
+	{
+		Physics* MyPhysics = Player->GetComponent<Physics>();
+		if (MyPhysics)
+		{
+			float velocityX = MyPhysics->GetVelocity().X;
+			float velocityY = MyPhysics->GetVelocity().Y;
+			std::wstring velocityTextX = L"Velocity.X: " + std::to_wstring(velocityX);
+			std::wstring velocityTextY = L"Velocity.Y: " + std::to_wstring(velocityY);
+
+			Gdiplus::Font font(L"Arial", 16);
+			Gdiplus::SolidBrush brush(Gdiplus::Color(255, 255, 255, 255));
+			InGraphics->DrawString(
+				velocityTextX.c_str(),
+				-1,
+				&font,
+				Gdiplus::PointF(10, 100), // 화면 왼쪽 위
+				&brush
+			);
+
+			InGraphics->DrawString(
+				velocityTextY.c_str(),
+				-1,
+				&font,
+				Gdiplus::PointF(10, 200), // 화면 왼쪽 위
+				&brush
+			);
+		}
 	}
 }

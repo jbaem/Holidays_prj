@@ -28,6 +28,8 @@ public:
 protected:
 	std::wstring PlayerStateToString(EPlayerState state);
 
+	void TestDisplay(Gdiplus::Graphics* InGraphics);
+
 	std::map<int, FAnimation*> Animations;
 	FAnimation* CurrentAnimation = nullptr;
 	

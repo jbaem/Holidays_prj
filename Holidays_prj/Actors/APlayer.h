@@ -20,6 +20,9 @@ public:
 	void SetState(EPlayerState InState) { if (State != InState) State = InState; }
 	inline EPlayerState GetState() const { return State; }
 	inline ELook GetLook() const { return Look; }
+	inline float GetMaxHealth() const { return MaxHealth; }
+
+	virtual void TakeDamage(float InDamage) override;
 
 	bool WasJustHit() const { return State == EPlayerState::Hit; }
 	bool IsOnGround() const { return bIsOnGround; }
@@ -40,6 +43,7 @@ public:
 	bool bCanShoot = true;
 
 private:
+	float MaxHealth = 50.0f;
 	EPlayerState State = EPlayerState::Idle;
 
 	const float ImageScale = 2.0f;

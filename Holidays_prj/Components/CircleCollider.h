@@ -12,7 +12,8 @@ public:
 
 	virtual void OnRender(Gdiplus::Graphics* InGraphics) override
 	{
-		Gdiplus::Pen pen(Gdiplus::Color(255, 0, 255, 0));
+		// DEBUG : Debug Draw
+		/*Gdiplus::Pen pen(Gdiplus::Color(255, 0, 255, 0));
 		Gdiplus::PointF Center = GetCenter();
 		InGraphics->DrawEllipse(
 			&pen,
@@ -20,7 +21,7 @@ public:
 			Center.Y - Radius,
 			Radius * 2,
 			Radius * 2
-		);
+		);*/
 	}
 
 	virtual bool IsCollision(Collider* Other) override;

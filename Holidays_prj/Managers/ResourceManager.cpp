@@ -41,8 +41,6 @@ Gdiplus::Bitmap* ResourceManager::GetImage(EPlayerState InState)
 	return PlayerResources[InState];
 }
 
-
-
 void ResourceManager::LoadResources()
 {
 	Resources[EResourceID::None] = nullptr;
@@ -61,6 +59,8 @@ void ResourceManager::LoadResources()
 	LoadResourceFromFile(EResourceID::PurpleEffect, L"./Images/Effect/PurpleEffect.png");
 	CropEffects();
 
+	LoadResourceFromFile(EResourceID::Golem,		L"./Images/Golem/_Golem.png");
+	LoadResourceFromFile(EResourceID::GolemBullet,	L"./Images/Golem/_Weapon.png");
 }
 
 void ResourceManager::LoadPlayerResources()
@@ -185,9 +185,9 @@ void ResourceManager::CropEffects()
 		RedEffectSprite->GetPixelFormat()
 	);
 
-	Gdiplus::Bitmap* PurpleEffectSprite = Resources[EResourceID::PurpleEffect];
-	Resources[EResourceID::EnemyBullet1] = PurpleEffectSprite->Clone(
-		Gdiplus::Rect(128, 48, 16, 16),
-		PurpleEffectSprite->GetPixelFormat()
-	);
+	//Gdiplus::Bitmap* PurpleEffectSprite = Resources[EResourceID::PurpleEffect];
+	//Resources[EResourceID::GolemBullet] = PurpleEffectSprite->Clone(
+	//	Gdiplus::Rect(128, 48, 16, 16),
+	//	PurpleEffectSprite->GetPixelFormat()
+	//);
 }

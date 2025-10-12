@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "CollisionManager.h"
 #include "SceneManager.h"
+#include "UIManager.h"
 
 #define TEST // TODO : should change to comment
 
@@ -48,6 +49,7 @@ void GameManager::Tick(float DeltaTime)
 	if (State == GameState::Playing || State == GameState::PlayerTest)
 	{
 		SceneManager::GetInstance().Tick(DeltaTime);
+		UIManager::GetInstance().Tick(DeltaTime);
 	}
 }
 
@@ -58,6 +60,7 @@ void GameManager::Render()
 
 	BackBufferGraphics->Clear(Gdiplus::Color(255, 0, 0, 0));
 	SceneManager::GetInstance().Render(BackBufferGraphics);
+	UIManager::GetInstance().Render(BackBufferGraphics);
 }
 
 void GameManager::SetGameState(GameState InState)

@@ -90,7 +90,7 @@ PlayerAnimator::PlayerAnimator(AActor* InOwner)
 		static_cast<int>(EPlayerState::Hit),
 		new FAnimation(
 			ResourceManager::GetInstance().GetImage(EPlayerState::Hit),
-			1, 300.0f, false
+			1, 1.0f, false
 		)
 	);
 
@@ -135,11 +135,11 @@ void PlayerAnimator::UpdateAnimation()
 	if(State == EPlayerState::Death)
 		return;
 
-	if (Player->WasJustHit())
+	if (State != EPlayerState::Hit && Player->WasJustHit())
 	{
 		SetState(EPlayerState::Hit);
+		return;
 	}
-
 	if(State == EPlayerState::Hit)
 	{
 		if (bIsFinished)
@@ -151,6 +151,7 @@ void PlayerAnimator::UpdateAnimation()
 			else
 			{
 				SetState(EPlayerState::Idle);
+				Player->SetState(EPlayerState::Idle);
 			}
 		}
 		return;
@@ -171,11 +172,15 @@ void PlayerAnimator::UpdateAnimation()
 		return;
 	}
 
+	Gdiplus::PointF AttackRangeOffset = { 30.0f, 40.0f };
+	if(Player->GetLook() == ELook::Left)
+		AttackRangeOffset.X *= -1;
+
 	if (IM.IsKeyPressed(EKey::EK_ATTACK) && !IsDashState() && !IsShootState() && !IsAttackState())
 	{
 		SetState(EPlayerState::Attack1);
 		APlayerBullet* AttackRange1 = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::None, ERenderLayer::Bullet);
-		AttackRange1->SetPosition(Player->GetPosition().X + 30.0f, Player->GetPosition().Y + 40.0f);
+		AttackRange1->SetPosition(Player->GetPosition().X + AttackRangeOffset.X, Player->GetPosition().Y + AttackRangeOffset.Y);
 		AttackRange1->SetDirection({ 0, 0 });
 		AttackRange1->GetComponent<CircleCollider>()->SetRadius(60.0f);
 		AttackRange1->GetComponent<CircleCollider>()->SetLayer(EPhysicsLayer::PlayerBullet);
@@ -190,7 +195,7 @@ void PlayerAnimator::UpdateAnimation()
 			{
 				SetState(EPlayerState::Attack2);
 				APlayerBullet* AttackRange2 = Factory::GetInstance().SpawnActor<APlayerBullet>(EResourceID::None, ERenderLayer::Bullet);
-				AttackRange2->SetPosition(Player->GetPosition().X + 30.0f, Player->GetPosition().Y + 40.0f);
+				AttackRange2->SetPosition(Player->GetPosition().X + AttackRangeOffset.X, Player->GetPosition().Y + AttackRangeOffset.Y);
 				AttackRange2->SetDirection({ 0, 0 });
 				AttackRange2->GetComponent<CircleCollider>()->SetRadius(60.0f);
 				AttackRange2->GetComponent<CircleCollider>()->SetLayer(EPhysicsLayer::PlayerBullet);

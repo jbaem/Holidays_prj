@@ -43,13 +43,15 @@ enum class EResourceID
 	PurpleEffect,
 
 	PlayerBullet,
-	EnemyBullet1,
-
+	GolemBullet,
 
 	// Tile Sprites
 	Tileset,
 	Platform,
-	Wall
+	Wall,
+
+	// Enemy1
+	Golem
 };
 
 enum class EComponentType

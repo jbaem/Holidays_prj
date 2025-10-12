@@ -12,10 +12,14 @@
 
 #include "../Actors/ABackground.h"
 #include "../Actors/APlayerBullet.h"
+#include "../Actors/AEnemy.h"
 
 TestScene::TestScene()
 {
 	Name = L"Test Map";
+
+    // Enemy Spawner
+    Spawner = new EnemySpawner();
 }
 
 void TestScene::OnEnter()
@@ -95,4 +99,16 @@ void TestScene::OnEnter()
     OneWayPlatform5->OnInitialize();
     RegisterActor(OneWayPlatform5);
 
+
+    // Golem
+	AEnemy* Golem = Factory::GetInstance().SpawnActor<AEnemy>(EResourceID::Golem, ERenderLayer::Enemy);
+    Golem->SetPosition(GameManager::ScreenWidth * 0.75f, GameManager::ScreenHeight * 0.25f);
+
+}
+
+void TestScene::OnTick(float DeltaTime)
+{
+	Scene::OnTick(DeltaTime);
+	
+    Spawner->OnTick(DeltaTime);
 }

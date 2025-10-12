@@ -12,3 +12,4 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/InputManager.h"
 #include "Managers/Factory.h"
+#include "Managers/UIManager.h"

@@ -25,6 +25,7 @@ public:
 	inline void SetVelocityY(float InVelocityY) { Velocity.Y = InVelocityY; }
 	inline void SetEnableGravity(bool bEnable) { this->bEnableGravity = bEnable; }
 
+	inline void SetMaxVelocity(float InMaxVelocityX, float InMaxVelocityY) { MaxVelocity.X = InMaxVelocityX; MaxVelocity.Y = InMaxVelocityY; }
 
 private:
 	Gdiplus::PointF Velocity = { 0.f, 0.f };

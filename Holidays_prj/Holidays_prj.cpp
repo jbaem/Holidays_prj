@@ -70,17 +70,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         ULONGLONG CurrentTime = GetTickCount64();
         float DeltaTime = (CurrentTime - LastTime) / 1000.0f;
 
-        if (DeltaTime < targetFrameTime)
+        if (DeltaTime >= targetFrameTime)
         {
-            Sleep((DWORD)((targetFrameTime - DeltaTime) * 1000));
-            CurrentTime = GetTickCount64();
-            DeltaTime = (CurrentTime - LastTime) / 1000.0f;
+            GameManager::GetInstance().Tick(DeltaTime);
+            LastTime = CurrentTime;
         }
-
-        LastTime = CurrentTime;
-
-        GameManager::GetInstance().Tick(DeltaTime);
-
         InvalidateRect(GameManager::GetInstance().GetWindowHandle(), nullptr, FALSE);
     }
 EXIT_LOOP:;
@@ -169,10 +163,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ResourceManager::GetInstance().Initialize();
         GameManager::GetInstance().Initialize();
 		SceneManager::GetInstance().Initialize();
+		UIManager::GetInstance().Initialize();
         break;
 
     case WM_DESTROY:
         PostQuitMessage(0);
+        UIManager::GetInstance().Destroy();
 		SceneManager::GetInstance().Destroy();
         GameManager::GetInstance().Destroy();
         ResourceManager::GetInstance().Destroy();
