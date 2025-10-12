@@ -17,5 +17,6 @@ private:
 	float SpawnInterval = 5.0f;
 	float TimeSinceLastSpawn = 0.0f;
 	int TotalSpawnCount = 0;
+	int LevelUpCount = 3;
 };
 
